@@ -390,13 +390,21 @@ export default function KrissKrossJobs() {
                 {/* Tabs */}
                 <div className="flex gap-2 p-1.5 bg-white/5 rounded-2xl w-fit border border-white/10">
                   <button
-                    onClick={() => setGenMode("video")}
+                    onClick={() => {
+                      setGenMode("video");
+                      setGenStatus("idle");
+                      setGenResultUrl(null);
+                    }}
                     className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${genMode === "video" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:text-white"}`}
                   >
                     <Video className="h-4 w-4" /> Video
                   </button>
                   <button
-                    onClick={() => setGenMode("image")}
+                    onClick={() => {
+                      setGenMode("image");
+                      setGenStatus("idle");
+                      setGenResultUrl(null);
+                    }}
                     className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${genMode === "image" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:text-white"}`}
                   >
                     <ImageIcon className="h-4 w-4" /> Image
