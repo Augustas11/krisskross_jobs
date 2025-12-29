@@ -13,30 +13,42 @@ import {
 const PROJECTS = [
   {
     id: 1,
-    title: "Fashion Brand Needs Summer Dress Videos",
-    budget: "$1,200 total ($80 per video)",
+    title: "Zesica: Boho-Chic Summer Dress Transitions",
+    budget: "$1,500 total ($100 per video)",
     quantity: "15 videos",
-    posted: "2 days ago",
-    applicants: "12 creators applied",
-    tags: ["Fashion", "Video", "Urgent"],
+    posted: "1 day ago",
+    applicants: "18 creators applied",
+    tags: ["Fashion", "Boho", "TikTok"],
+    brandName: "ZESICA Official",
+    totalSpent: "$14,500+",
+    hiringRate: "94%",
+    brandInitial: "Z"
   },
   {
     id: 2,
-    title: "Beauty Brand Seeks Product Image Set",
-    budget: "$450 total ($30 per image)",
-    quantity: "15 images",
-    posted: "1 day ago",
-    applicants: "5 creators applied",
-    tags: ["Beauty", "Images"],
+    title: "Evaless: Amazon-Style Try-On Haul AI Videos",
+    budget: "$1,600 total ($80 per video)",
+    quantity: "20 videos",
+    posted: "2 days ago",
+    applicants: "14 creators applied",
+    tags: ["Apparel", "Try-on", "Viral"],
+    brandName: "Evaless",
+    totalSpent: "$8,200+",
+    hiringRate: "88%",
+    brandInitial: "E"
   },
   {
     id: 3,
-    title: "Bilingual TikTok Videos (English & Spanish)",
-    budget: "$900 total ($60 per video)",
-    quantity: "15 videos",
-    posted: "4 days ago",
-    applicants: "18 creators applied",
-    tags: ["Bilingual", "TikTok", "Video"],
+    title: "Style Sorcery: Quiet Luxury Flat-Lay Animations",
+    budget: "$1,200 total ($100 per video)",
+    quantity: "12 videos",
+    posted: "3 days ago",
+    applicants: "22 creators applied",
+    tags: ["Luxury", "Animation", "Elegant"],
+    brandName: "Style Sorcery",
+    totalSpent: "$21,000+",
+    hiringRate: "97%",
+    brandInitial: "S"
   },
   {
     id: 4,
@@ -46,6 +58,9 @@ const PROJECTS = [
     posted: "3 days ago",
     applicants: "9 creators applied",
     tags: ["Accessories", "Video"],
+    totalSpent: "$5,000+",
+    hiringRate: "85%",
+    brandInitial: "B"
   },
   {
     id: 5,
@@ -55,6 +70,9 @@ const PROJECTS = [
     posted: "5 days ago",
     applicants: "14 creators applied",
     tags: ["Tech", "Video"],
+    totalSpent: "$12,000+",
+    hiringRate: "90%",
+    brandInitial: "B"
   },
   {
     id: 6,
@@ -64,6 +82,9 @@ const PROJECTS = [
     posted: "1 day ago",
     applicants: "7 creators applied",
     tags: ["Lifestyle", "Images"],
+    totalSpent: "$3,500+",
+    hiringRate: "78%",
+    brandInitial: "B"
   },
   {
     id: 7,
@@ -73,6 +94,9 @@ const PROJECTS = [
     posted: "2 days ago",
     applicants: "11 creators applied",
     tags: ["Food", "TikTok"],
+    totalSpent: "$9,800+",
+    hiringRate: "92%",
+    brandInitial: "B"
   },
   {
     id: 8,
@@ -82,6 +106,9 @@ const PROJECTS = [
     posted: "6 days ago",
     applicants: "16 creators applied",
     tags: ["Fitness", "Video"],
+    totalSpent: "$15,200+",
+    hiringRate: "95%",
+    brandInitial: "B"
   },
   {
     id: 9,
@@ -91,6 +118,9 @@ const PROJECTS = [
     posted: "3 days ago",
     applicants: "6 creators applied",
     tags: ["Bilingual", "French", "Video"],
+    totalSpent: "$4,200+",
+    hiringRate: "82%",
+    brandInitial: "B"
   },
   {
     id: 10,
@@ -100,6 +130,9 @@ const PROJECTS = [
     posted: "4 days ago",
     applicants: "13 creators applied",
     tags: ["Pets", "TikTok"],
+    totalSpent: "$7,600+",
+    hiringRate: "89%",
+    brandInitial: "B"
   },
   {
     id: 11,
@@ -109,6 +142,9 @@ const PROJECTS = [
     posted: "2 days ago",
     applicants: "10 creators applied",
     tags: ["Kids", "Video"],
+    totalSpent: "$6,300+",
+    hiringRate: "87%",
+    brandInitial: "B"
   },
   {
     id: 12,
@@ -118,6 +154,9 @@ const PROJECTS = [
     posted: "1 day ago",
     applicants: "20 creators applied",
     tags: ["General", "Images"],
+    totalSpent: "$1,800+",
+    hiringRate: "75%",
+    brandInitial: "B"
   }
 ];
 
@@ -581,9 +620,11 @@ export default function KrissKrossJobs() {
                 <div className="sticky top-0 space-y-8">
                   <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white font-black">B</div>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white font-black">
+                        {selectedJob.brandInitial || 'B'}
+                      </div>
                       <div>
-                        <h4 className="font-bold text-slate-900">Vetted Brand</h4>
+                        <h4 className="font-bold text-slate-900">{selectedJob.brandName || "Vetted Brand"}</h4>
                         <div className="flex items-center gap-1">
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                           <span className="text-xs font-bold text-slate-600">4.9/5 Rating</span>
@@ -594,11 +635,11 @@ export default function KrissKrossJobs() {
                     <div className="space-y-4 pt-4 border-t border-slate-100">
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500">Total Spent</span>
-                        <span className="font-bold text-slate-900">$25,000+</span>
+                        <span className="font-bold text-slate-900">{selectedJob.totalSpent || "$10,000+"}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500">Hiring Rate</span>
-                        <span className="font-bold text-slate-900">92%</span>
+                        <span className="font-bold text-slate-900">{selectedJob.hiringRate || "90%"}</span>
                       </div>
                     </div>
                   </div>
