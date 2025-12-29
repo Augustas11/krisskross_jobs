@@ -236,22 +236,16 @@ export default function KrissKrossJobs() {
       {/* 2. HERO SECTION */}
       <section className="mx-auto max-w-4xl px-6 py-20 text-center md:py-32">
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 md:text-6xl lg:text-7xl">
-          The AI Content Marketplace <br className="hidden md:block" /> for <span className="text-[#0040E5]">TikTok Shop</span>
+          Turn your AI work into a <span className="text-[#0040E5]">creator business</span>
         </h1>
         <p className="mx-auto mt-8 max-w-2xl text-lg text-slate-600 md:text-xl leading-relaxed">
-          Connect with expert AI creators who generate product videos and images in minutes.
-          Or become a creator and start earning today.
+          Find brands actively hiring for TikTok Shop content—curated projects,
+          vetted clients, built for creators like you. Only on KrissKross Jobs.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <button
-            onClick={() => { }}
-            className="w-full sm:w-auto rounded-full bg-[#0040E5] px-8 py-4 text-base font-bold text-white shadow-xl shadow-[#0040E5]/30 hover:bg-[#0036C2] transition-all"
-          >
-            Find a Creator
-          </button>
-          <button
             onClick={() => setIsSignupModalOpen(true)}
-            className="w-full sm:w-auto rounded-full border-2 border-[#0040E5] px-8 py-4 text-base font-bold text-[#0040E5] hover:bg-[#0040E5]/5 transition-all"
+            className="w-full sm:w-auto rounded-full bg-[#0040E5] px-10 py-5 text-lg font-bold text-white shadow-xl shadow-[#0040E5]/30 hover:bg-[#0036C2] transition-all active:scale-95"
           >
             Become a Creator
           </button>
@@ -281,8 +275,8 @@ export default function KrissKrossJobs() {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-semibold transition-all ${activeCategory === cat
-                    ? "bg-[#0040E5] text-white"
-                    : "text-slate-600 hover:bg-slate-100"
+                  ? "bg-[#0040E5] text-white"
+                  : "text-slate-600 hover:bg-slate-100"
                   }`}
               >
                 {cat}
@@ -356,32 +350,7 @@ export default function KrissKrossJobs() {
         </div>
       </section>
 
-      {/* 6. HOW IT WORKS (BUYERS) */}
-      <section id="how-it-works" className="bg-[#F9FAFB] py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">How to Hire an AI Creator</h2>
-          <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
-            {[
-              { icon: Search, title: "Browse Creators", desc: "Filter by niche, price, and turnaround time. Review portfolios and past client ratings." },
-              { icon: MessageSquare, title: "Describe Your Needs", desc: "Send your product details and requirements. Creators respond within 24 hours with custom quotes." },
-              { icon: Download, title: "Receive & Review", desc: "Get your AI-generated content in 24-48 hours. Request revisions if needed. Pay only when satisfied." }
-            ].map((step, i) => (
-              <div key={i} className="text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
-                  <step.icon className="h-8 w-8 text-[#0040E5]" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">{step.title}</h3>
-                <p className="mt-4 text-slate-600 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-16 text-center">
-            <button className="rounded-full bg-[#0040E5] px-10 py-4 text-base font-bold text-white shadow-xl shadow-[#0040E5]/30 hover:bg-[#0036C2]">
-              Post Your First Job
-            </button>
-          </div>
-        </div>
-      </section>
+
 
       {/* 7. HOW IT WORKS (SELLERS) */}
       <section id="for-sellers" className="bg-white py-24">
@@ -442,69 +411,7 @@ export default function KrissKrossJobs() {
         </div>
       </section>
 
-      {/* 9. PRICING */}
-      <section className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Choose Your Creator Plan</h2>
-          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Free */}
-            <div className="flex flex-col rounded-[2.5rem] border border-slate-200 p-10 h-full">
-              <h3 className="text-xl font-bold">Basic Creator</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-black">Free</span>
-              </div>
-              <p className="mt-2 text-slate-500">Perfect for getting started</p>
-              <ul className="mt-8 flex-1 space-y-4">
-                {["List up to 3 services", "Accept unlimited jobs", "15% platform fee", "Standard support", "Payment in 7 days"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-[#0040E5]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button className="mt-10 w-full rounded-2xl border-2 border-slate-200 py-4 text-base font-bold text-slate-600 hover:border-[#0040E5] hover:text-[#0040E5] transition-all">Start Free</button>
-            </div>
 
-            {/* Pro */}
-            <div className="relative flex flex-col rounded-[2.5rem] border-2 border-[#0040E5] p-10 h-full shadow-2xl shadow-[#0040E5]/10">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0040E5] px-4 py-1 text-xs font-black uppercase text-white tracking-widest">Most Popular</div>
-              <h3 className="text-xl font-bold">Pro Creator</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-black">$20</span>
-                <span className="text-slate-400 font-bold">/month</span>
-              </div>
-              <p className="mt-2 text-slate-500">For serious content creators</p>
-              <ul className="mt-8 flex-1 space-y-4">
-                {["List unlimited services", "Accept unlimited jobs", "10% platform fee (save 5%)", "Priority listing in search", "Featured badge", "Priority support", "Payment in 48 hours", "50 KrissKross AI credits/month"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-[#0040E5]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button className="mt-10 w-full rounded-2xl bg-[#0040E5] py-4 text-base font-bold text-white shadow-lg shadow-[#0040E5]/30 hover:bg-[#0036C2]">Upgrade to Pro</button>
-            </div>
-
-            {/* Enterprise */}
-            <div className="flex flex-col rounded-[2.5rem] border border-slate-200 p-10 h-full">
-              <h3 className="text-xl font-bold">Agency/Team</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-black">Custom</span>
-              </div>
-              <p className="mt-2 text-slate-500">For high-volume businesses</p>
-              <ul className="mt-8 flex-1 space-y-4">
-                {["Everything in Pro", "5% platform fee (save 10%)", "Team collaboration tools", "API access", "White-label options", "Dedicated account manager"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-[#0040E5]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button className="mt-10 w-full rounded-2xl border-2 border-slate-200 py-4 text-base font-bold text-slate-600 hover:border-[#0040E5] hover:text-[#0040E5] transition-all">Contact Sales</button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 10. FAQ */}
       <section className="bg-[#F9FAFB] py-24">
@@ -552,7 +459,7 @@ export default function KrissKrossJobs() {
             Turn your AI work into a creator business
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-lg text-white/90 md:text-xl leading-relaxed">
-            Find brands actively hiring for TikTok Shop content—curated projects, 
+            Find brands actively hiring for TikTok Shop content—curated projects,
             vetted clients, built for creators like you. Only on KrissKross Jobs.
           </p>
           <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
