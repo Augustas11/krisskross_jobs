@@ -68,7 +68,7 @@ export default function KrissKrossJobs() {
 
   // Separate prompts for video and image
   const [videoPrompt, setVideoPrompt] = useState("A lighthearted, playful cartoon-style video. The fruit from Image 1 blinks. An empty glass bottle from Image 2 slides in from one side and stops in front of the fruit. The fruit performs a simple magical gesture. Sparkling magic appears, and juice materializes directly inside the bottle, with the color strictly matching Image 2. As the bottle fills, it grows larger and moves to the center. The fruit runs off-screen, and the final shot holds on the Image 2 bottle. A friendly voiceover says, \"Fresh juice, made by magic!\" The voiceover must finish before the video ends. Include soft blink sounds, magic sparkle audio, light juice-fill sound, glass clinks, and a quick running sound.");
-  const [imagePrompt, setImagePrompt] = useState("Change the character action in Figure 1 to the action of holding the cat in Figure 3 with both hands, and change the background to the background picture in Figure 2 to generate a series of 3 pictures, which are bottom-up, head-up, and top-up perspectives.");
+  const [imagePrompt, setImagePrompt] = useState("Change the character action in Figure 1 to the action of holding the cat in Figure 3 with both hands, and change the background to the background picture in Figure 2. Generate a single, cohesive, high-quality image with a natural perspective.");
 
   // Separate reference images for video and image
   // Video only needs first and last frame (2 images)
