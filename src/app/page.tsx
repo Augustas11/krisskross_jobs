@@ -175,14 +175,16 @@ export default function KrissKrossJobs() {
     setGenResultUrl(null);
 
     try {
-      // Resolve blobs to base64 before sending
+      // Resolve blobs and samples to base64 before sending
       const resolvedRefImages = await Promise.all(refImages.map(async (img) => {
         if (!img) return null;
-        if (img.startsWith('blob:')) {
+
+        // Convert both blob URLs (uploads) and local samples (starting with /) to base64
+        if (img.startsWith('blob:') || img.startsWith('/')) {
           try {
             return await blobToBase64(img);
           } catch (e) {
-            console.error('Failed to convert blob:', e);
+            console.error('Failed to convert image:', e);
             return null;
           }
         }
