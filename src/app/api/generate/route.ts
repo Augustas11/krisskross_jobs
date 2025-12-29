@@ -87,6 +87,16 @@ export async function POST(req: NextRequest) {
                 stream: false,
                 watermark: true
             };
+
+            // Add reference images if available (Seedream supports 'image' param for i2i/blending)
+            if (resolvedImages && resolvedImages.length > 0) {
+                const validImages = resolvedImages.filter((img: string | null) => img !== null);
+                if (validImages.length > 0) {
+                    // Pass valid base64 images to the 'image' parameter
+                    body.image = validImages;
+                    console.log(`Adding ${validImages.length} reference images to Seedream request`);
+                }
+            }
         }
 
         const headers = {
