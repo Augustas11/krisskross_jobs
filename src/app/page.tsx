@@ -401,27 +401,60 @@ export default function KrissKrossJobs() {
               <p className="mt-4 text-slate-500 font-medium">Showcase your AI skills and start applying to projects in minutes.</p>
             </div>
 
-            <form className="mt-12 space-y-6">
+            <form
+              action="https://formspree.io/f/xpqzowon"
+              method="POST"
+              encType="multipart/form-data"
+              className="mt-12 space-y-6"
+            >
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Full Name</label>
-                  <input type="text" className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none" />
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                  />
                 </div>
                 <div>
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Email</label>
-                  <input type="email" className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none" />
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                  />
                 </div>
               </div>
               <div>
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Your Portfolio URL (Optional)</label>
-                <input type="text" className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none" placeholder="Loomly, Instagram, Behance..." />
+                <input
+                  type="text"
+                  name="portfolio"
+                  className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                  placeholder="Loomly, Instagram, Behance..."
+                />
               </div>
-              <div className="rounded-3xl border-2 border-dashed border-slate-100 p-10 text-center bg-slate-50">
-                <Download className="mx-auto h-8 w-8 text-slate-300 mb-4 rotate-180" />
-                <p className="text-sm font-bold text-slate-700">Upload 3-5 AI samples</p>
-                <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed">Let clients see your work immediately. <br /> (Max 50MB per file)</p>
+              <div className="relative group">
+                <input
+                  type="file"
+                  name="samples"
+                  multiple
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                <div className="rounded-3xl border-2 border-dashed border-slate-100 p-10 text-center bg-slate-50 group-hover:bg-slate-100 transition-colors">
+                  <Download className="mx-auto h-8 w-8 text-slate-300 mb-4 rotate-180" />
+                  <p className="text-sm font-bold text-slate-700">Upload 3-5 AI samples</p>
+                  <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed">Click or drag to upload (Max 50MB per file)</p>
+                </div>
               </div>
-              <button type="submit" onClick={(e) => e.preventDefault()} className="w-full rounded-2xl bg-primary py-5 text-lg font-black text-white shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all">Go Live Now</button>
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-primary py-5 text-lg font-black text-white shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all"
+              >
+                Go Live Now
+              </button>
               <p className="text-center text-[11px] text-slate-400 font-bold">No approval required. Instant access to all projects.</p>
             </form>
           </div>
