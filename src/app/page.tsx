@@ -286,7 +286,10 @@ export default function KrissKrossJobs() {
           </div>
 
           {/* Right Side Buttons */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-6 shrink-0">
+            <a href="/login" className="hidden lg:block text-sm font-bold text-slate-500 hover:text-brand-dark transition-colors">
+              Log In
+            </a>
             <button
               onClick={() => setIsSignupModalOpen(true)}
               className="rounded-full bg-primary px-8 py-3 text-sm font-black text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
@@ -544,13 +547,13 @@ export default function KrissKrossJobs() {
                       {/* Soft signup CTA */}
                       <div className="pt-2 border-t border-white/10">
                         <p className="text-xs text-slate-400 text-center mb-2">
-                          💡 Want more? Sign up for 10 free credits
+                          💡 Want more? Apply to join our creator network.
                         </p>
                         <button
                           onClick={() => setIsSignupModalOpen(true)}
                           className="w-full text-xs font-bold text-primary hover:text-white transition-colors"
                         >
-                          Create Free Account →
+                          Apply for Access →
                         </button>
                       </div>
                     </div>
@@ -640,8 +643,8 @@ export default function KrissKrossJobs() {
             {[
               {
                 icon: <Sparkles className="h-8 w-8 text-primary" />,
-                title: "1. Build Your Profile",
-                desc: "Upload 3-5 of your best AI-generated samples. No approval process—go live immediately."
+                title: "1. Apply & Get Approved",
+                desc: "Submit your portfolio for review. We curate the best AI talent for our brands."
               },
               {
                 icon: <LayoutGrid className="h-8 w-8 text-primary" />,
@@ -704,7 +707,7 @@ export default function KrissKrossJobs() {
               >
                 Become Creator
               </button>
-              <p className="text-slate-400 text-sm font-bold">No approval needed. Go live in 10 minutes.</p>
+              <p className="text-slate-400 text-sm font-bold">Join the community of elite AI creators.</p>
             </div>
           </div>
         </div>
@@ -836,7 +839,7 @@ export default function KrissKrossJobs() {
             {(remainingGenerations.video === 0 || remainingGenerations.image === 0) && (
               <div className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-4">
                 <p className="text-sm font-bold text-primary text-center">
-                  🎉 You've used your free generations! Sign up to get 10 more credits for each type.
+                  You've used your free generations. Apply for creator access to unlock the full platform.
                 </p>
               </div>
             )}
@@ -845,8 +848,8 @@ export default function KrissKrossJobs() {
               <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/5 text-primary">
                 <Sparkles className="h-10 w-10" />
               </div>
-              <h2 className="text-4xl font-black text-brand-dark">Become Creator</h2>
-              <p className="mt-4 text-slate-500 font-medium">Showcase your AI skills and start applying to projects in minutes.</p>
+              <h2 className="text-4xl font-black text-brand-dark">Apply for Access</h2>
+              <p className="mt-4 text-slate-500 font-medium">Join an exclusive network of top-tier AI creators. Applications are reviewed manually.</p>
             </div>
 
             <form
@@ -863,6 +866,7 @@ export default function KrissKrossJobs() {
                     name="name"
                     required
                     className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                    placeholder="Jane Doe"
                   />
                 </div>
                 <div>
@@ -872,35 +876,45 @@ export default function KrissKrossJobs() {
                     name="email"
                     required
                     className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                    placeholder="jane@example.com"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Your Portfolio URL (Optional)</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Your Portfolio URL <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   name="portfolio"
+                  required
                   className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
                   placeholder="Loomly, Instagram, Behance..."
                 />
               </div>
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Link to AI Samples (Google Drive, Dropbox, etc.)</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Link to AI Samples</label>
+                <p className="mb-2 text-xs text-slate-400 font-medium">Please include examples created with KrissKross AI or other tools.</p>
                 <input
                   type="url"
                   name="samples_link"
-                  required
-                  className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
                   placeholder="Paste your Drive or Dropbox link here..."
                 />
               </div>
               <button
                 type="submit"
-                className="w-full rounded-2xl bg-primary py-5 text-lg font-black text-white shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all"
+                className="w-full rounded-2xl bg-brand-dark py-5 text-lg font-black text-white shadow-2xl hover:scale-[1.02] transition-all"
               >
-                Go Live Now
+                Submit Application
               </button>
-              <p className="text-center text-[11px] text-slate-400 font-bold">No approval required. Instant access to all projects.</p>
+              <p className="text-center text-[11px] text-slate-400 font-bold">
+                We review every application. If approved, you will receive an invite to create your profile and access the full toolset.
+              </p>
+              <div className="mt-8 text-center border-t border-slate-100 pt-6">
+                <p className="text-xs font-bold text-slate-400">Already a member?</p>
+                <a href="/login" className="text-sm font-black text-primary hover:text-brand-dark transition-colors">
+                  Sign In to Creator Studio
+                </a>
+              </div>
             </form>
           </div>
         </div>
