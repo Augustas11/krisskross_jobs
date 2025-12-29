@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Video, ImageIcon, Sparkles, Download,
   ArrowRight, Star, Clock, Zap,
   Menu, X, CheckCircle2, ChevronLeft,
   Users, Target, CheckCircle, LayoutGrid, Loader2, Plus, ArrowLeftRight
 } from "lucide-react";
+import { canGenerate, addGeneration, getRemainingGenerations } from "@/lib/usageTracker";
 
 // --- Mock Data ---
 
@@ -62,6 +63,9 @@ export default function KrissKrossJobs() {
   const [genStatus, setGenStatus] = useState<"idle" | "processing" | "completed">("idle");
   const [genResultUrl, setGenResultUrl] = useState<string | null>(null);
 
+  // Usage tracking state
+  const [remainingGenerations, setRemainingGenerations] = useState({ video: 2, image: 2 });
+
   // Separate prompts for video and image
   const [videoPrompt, setVideoPrompt] = useState("A lighthearted, playful cartoon-style video. The fruit from Image 1 blinks. An empty glass bottle from Image 2 slides in from one side and stops in front of the fruit. The fruit performs a simple magical gesture. Sparkling magic appears, and juice materializes directly inside the bottle, with the color strictly matching Image 2. As the bottle fills, it grows larger and moves to the center. The fruit runs off-screen, and the final shot holds on the Image 2 bottle. A friendly voiceover says, \"Fresh juice, made by magic!\" The voiceover must finish before the video ends. Include soft blink sounds, magic sparkle audio, light juice-fill sound, glass clinks, and a quick running sound.");
   const [imagePrompt, setImagePrompt] = useState("Change the character action in Figure 1 to the action of holding the cat in Figure 3 with both hands, and change the background to the background picture in Figure 2 to generate a series of 3 pictures, which are bottom-up, head-up, and top-up perspectives.");
@@ -83,6 +87,14 @@ export default function KrissKrossJobs() {
   const setPrompt = genMode === "video" ? setVideoPrompt : setImagePrompt;
   const refImages = genMode === "video" ? videoRefImages : imageRefImages;
   const setRefImages = genMode === "video" ? setVideoRefImages : setImageRefImages;
+
+  // Initialize remaining generations on mount
+  useEffect(() => {
+    setRemainingGenerations({
+      video: getRemainingGenerations('video'),
+      image: getRemainingGenerations('image')
+    });
+  }, []);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
@@ -112,6 +124,13 @@ export default function KrissKrossJobs() {
           setGenResultUrl(data.content?.video_url || data.result?.url || data.data?.[0]?.url);
           setGenStatus("completed");
           setIsGenerating(false);
+
+          // Track successful generation
+          addGeneration(genMode);
+          setRemainingGenerations({
+            video: getRemainingGenerations('video'),
+            image: getRemainingGenerations('image')
+          });
         } else if (data.status === 'failed') {
           alert('Generation failed: ' + (data.message || 'Unknown error'));
           setGenStatus("idle");
@@ -144,6 +163,13 @@ export default function KrissKrossJobs() {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
+
+    // Check if user has remaining free generations
+    if (!canGenerate(genMode)) {
+      setIsSignupModalOpen(true);
+      return;
+    }
+
     setIsGenerating(true);
     setGenStatus("processing");
     setGenResultUrl(null);
@@ -186,16 +212,50 @@ export default function KrissKrossJobs() {
         setGenResultUrl(data.data[0].url);
         setGenStatus("completed");
         setIsGenerating(false);
+
+        // Track successful generation
+        addGeneration(genMode);
+        setRemainingGenerations({
+          video: getRemainingGenerations('video'),
+          image: getRemainingGenerations('image')
+        });
       } else {
         // Fallback for other immediate results
         setGenResultUrl(data.url || data.video_url);
         setGenStatus("completed");
         setIsGenerating(false);
+
+        // Track successful generation
+        addGeneration(genMode);
+        setRemainingGenerations({
+          video: getRemainingGenerations('video'),
+          image: getRemainingGenerations('image')
+        });
       }
     } catch (error: any) {
       alert(error.message);
       setGenStatus("idle");
       setIsGenerating(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!genResultUrl) return;
+
+    try {
+      const response = await fetch(genResultUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `krisskross-${genMode}-${Date.now()}.${genMode === 'video' ? 'mp4' : 'png'}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Download failed. Please try again or right-click to save.');
     }
   };
 
@@ -316,6 +376,17 @@ export default function KrissKrossJobs() {
                   </button>
                 </div>
 
+                {/* Remaining Generations Indicator */}
+                <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-bold text-white">Free {genMode === 'video' ? 'Video' : 'Image'} Generations</span>
+                  </div>
+                  <div className={`text-sm font-black ${remainingGenerations[genMode] > 0 ? 'text-primary' : 'text-slate-500'}`}>
+                    {remainingGenerations[genMode]} of 2 remaining
+                  </div>
+                </div>
+
                 {/* Reference Images (Formerly Frame Uploaders) */}
                 <div className="flex items-center gap-4 py-2">
                   <div className="flex-1">
@@ -432,42 +503,56 @@ export default function KrissKrossJobs() {
                 )}
 
                 {genStatus === "completed" && (
-                  <div className="absolute inset-0 bg-slate-200 animate-pulse flex flex-col">
+                  <div className="absolute inset-0 flex flex-col">
                     {/* Real Result Preview */}
                     {genResultUrl ? (
-                      <div className="h-full w-full relative">
+                      <div className="flex-1 w-full relative bg-slate-900">
                         {genMode === "video" ? (
-                          <video src={genResultUrl} controls className="h-full w-full object-cover" />
+                          <video src={genResultUrl} controls className="h-full w-full object-contain" />
                         ) : (
-                          <img src={genResultUrl} className="h-full w-full object-cover" alt="Generated asset" />
+                          <img src={genResultUrl} className="h-full w-full object-contain" alt="Generated asset" />
                         )}
                       </div>
                     ) : (
-                      <div className="flex-1 flex items-center justify-center">
+                      <div className="flex-1 flex items-center justify-center bg-slate-200">
                         <p className="text-brand-dark font-black text-xs uppercase tracking-[0.2em] opacity-40">Sample Rendered Successfully</p>
                       </div>
                     )}
 
-                    <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-md flex flex-col items-center justify-center p-10 text-center animate-in fade-in duration-500">
-                      <div className="mb-6 rounded-2xl bg-primary/20 p-4">
-                        <CheckCircle2 className="h-10 w-10 text-primary" />
+                    {/* Action Bar at Bottom */}
+                    <div className="bg-white/10 backdrop-blur-md border-t border-white/20 p-6 space-y-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        <h4 className="text-lg font-black text-white">Generation Complete!</h4>
                       </div>
-                      <h4 className="text-2xl font-black text-white mb-4">Sample Created!</h4>
-                      <p className="text-slate-400 text-sm font-medium mb-8">
-                        Sign up to download your high-resolution {genMode} and start applying to brands.
-                      </p>
-                      <button
-                        onClick={() => setIsSignupModalOpen(true)}
-                        className="w-full rounded-xl bg-white text-brand-dark py-4 text-sm font-black shadow-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
-                      >
-                        Claim Your Asset & Apply <Download className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => { setGenStatus("idle"); setGenResultUrl(null); }}
-                        className="mt-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
-                      >
-                        Try Another Prompt
-                      </button>
+
+                      <div className="flex gap-3">
+                        <button
+                          onClick={handleDownload}
+                          className="flex-1 rounded-xl bg-primary text-white py-3 text-sm font-black shadow-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+                        >
+                          <Download className="h-4 w-4" /> Download HD
+                        </button>
+                        <button
+                          onClick={() => { setGenStatus("idle"); setGenResultUrl(null); }}
+                          className="px-6 rounded-xl border-2 border-white/20 text-white py-3 text-sm font-bold hover:bg-white/10 transition-all"
+                        >
+                          Try Another
+                        </button>
+                      </div>
+
+                      {/* Soft signup CTA */}
+                      <div className="pt-2 border-t border-white/10">
+                        <p className="text-xs text-slate-400 text-center mb-2">
+                          💡 Want more? Sign up for 10 free credits
+                        </p>
+                        <button
+                          onClick={() => setIsSignupModalOpen(true)}
+                          className="w-full text-xs font-bold text-primary hover:text-white transition-colors"
+                        >
+                          Create Free Account →
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -746,6 +831,16 @@ export default function KrissKrossJobs() {
           <div className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm" onClick={() => setIsSignupModalOpen(false)}></div>
           <div className="relative w-full max-w-xl rounded-3xl bg-white p-12 shadow-2xl animate-in zoom-in-95 duration-300">
             <button onClick={() => setIsSignupModalOpen(false)} className="absolute right-6 top-6 text-slate-400 hover:text-brand-dark transition-colors"><X className="h-6 w-6" /></button>
+
+            {/* Context-aware banner */}
+            {(remainingGenerations.video === 0 || remainingGenerations.image === 0) && (
+              <div className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-4">
+                <p className="text-sm font-bold text-primary text-center">
+                  🎉 You've used your free generations! Sign up to get 10 more credits for each type.
+                </p>
+              </div>
+            )}
+
             <div className="text-center">
               <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/5 text-primary">
                 <Sparkles className="h-10 w-10" />
