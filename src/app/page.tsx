@@ -205,7 +205,7 @@ export default function KrissKrossJobs() {
 
           {/* Center: Nav links */}
           <div className="hidden lg:flex items-center gap-8 mx-auto">
-            {["Browse Jobs", "How It Works", "For Sellers", "For Buyers"].map((item) => (
+            {["Browse Jobs", "How It Works", "For Sellers"].map((item) => (
               <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="text-sm font-medium text-slate-600 hover:text-[#0040E5] transition-colors">{item}</a>
             ))}
           </div>
@@ -491,14 +491,7 @@ export default function KrissKrossJobs() {
                 ))}
               </ul>
             </div>
-            <div>
-              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">For Buyers</h4>
-              <ul className="space-y-4 text-sm font-medium">
-                {["Post a Job", "Find Creators", "Project Guidelines", "Payment Protection"].map(l => (
-                  <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
-                ))}
-              </ul>
-            </div>
+
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">For Creators</h4>
               <ul className="space-y-4 text-sm font-medium">
@@ -720,7 +713,7 @@ export default function KrissKrossJobs() {
             <button onClick={() => setMobileMenuOpen(false)}><X className="h-6 w-6" /></button>
           </div>
           <div className="mt-12 space-y-8">
-            {["Browse Jobs", "How It Works", "For Sellers", "For Buyers", "Pricing", "About Us"].map(l => (
+            {["Browse Jobs", "How It Works", "For Sellers", "Pricing", "About Us"].map(l => (
               <a key={l} href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">{l}</a>
             ))}
             <div className="pt-8 space-y-4">
