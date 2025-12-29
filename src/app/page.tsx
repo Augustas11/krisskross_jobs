@@ -436,18 +436,16 @@ export default function KrissKrossJobs() {
                   placeholder="Loomly, Instagram, Behance..."
                 />
               </div>
-              <div className="relative group">
+              <div>
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Link to AI Samples (Google Drive, Dropbox, etc.)</label>
                 <input
-                  type="file"
-                  name="samples"
-                  multiple
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  type="url"
+                  name="samples_link"
+                  required
+                  className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+                  placeholder="Paste your Drive or Dropbox link here..."
                 />
-                <div className="rounded-3xl border-2 border-dashed border-slate-100 p-10 text-center bg-slate-50 group-hover:bg-slate-100 transition-colors">
-                  <Download className="mx-auto h-8 w-8 text-slate-300 mb-4 rotate-180" />
-                  <p className="text-sm font-bold text-slate-700">Upload 3-5 AI samples</p>
-                  <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed">Click or drag to upload (Max 50MB per file)</p>
-                </div>
+                <p className="mt-2 text-[10px] text-slate-400 font-medium italic">Note: Directly uploading files requires a paid Formspree plan. Providing a link is faster and free!</p>
               </div>
               <button
                 type="submit"
