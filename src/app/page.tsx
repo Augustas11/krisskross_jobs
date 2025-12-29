@@ -5,7 +5,7 @@ import {
   Video, ImageIcon, Sparkles, Download,
   ArrowRight, Star, Clock, Zap,
   Menu, X, CheckCircle2, ChevronLeft,
-  Users, Target, CheckCircle, LayoutGrid
+  Users, Target, CheckCircle, LayoutGrid, Loader2, Plus, ArrowLeftRight
 } from "lucide-react";
 
 // --- Mock Data ---
@@ -56,6 +56,149 @@ export default function KrissKrossJobs() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // --- AI Generator State ---
+  const [genMode, setGenMode] = useState<"video" | "image">("video");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [genStatus, setGenStatus] = useState<"idle" | "processing" | "completed">("idle");
+  const [genResultUrl, setGenResultUrl] = useState<string | null>(null);
+
+  // Separate prompts for video and image
+  const [videoPrompt, setVideoPrompt] = useState("A lighthearted, playful cartoon-style video. The fruit from Image 1 blinks. An empty glass bottle from Image 2 slides in from one side and stops in front of the fruit. The fruit performs a simple magical gesture. Sparkling magic appears, and juice materializes directly inside the bottle, with the color strictly matching Image 2. As the bottle fills, it grows larger and moves to the center. The fruit runs off-screen, and the final shot holds on the Image 2 bottle. A friendly voiceover says, \"Fresh juice, made by magic!\" The voiceover must finish before the video ends. Include soft blink sounds, magic sparkle audio, light juice-fill sound, glass clinks, and a quick running sound.");
+  const [imagePrompt, setImagePrompt] = useState("Change the character action in Figure 1 to the action of holding the cat in Figure 3 with both hands, and change the background to the background picture in Figure 2 to generate a series of 3 pictures, which are bottom-up, head-up, and top-up perspectives.");
+
+  // Separate reference images for video and image
+  // Video only needs first and last frame (2 images)
+  const [videoRefImages, setVideoRefImages] = useState<(string | null)[]>([
+    "/samples/fruit-character.png",
+    "/samples/juice-bottle.png"
+  ]);
+  const [imageRefImages, setImageRefImages] = useState<(string | null)[]>([
+    "/samples/fig1-character.jpg",
+    "/samples/fig2-background.jpg",
+    "/samples/fig3-cat.jpg"
+  ]);
+
+  // Current active prompt and images based on mode
+  const prompt = genMode === "video" ? videoPrompt : imagePrompt;
+  const setPrompt = genMode === "video" ? setVideoPrompt : setImagePrompt;
+  const refImages = genMode === "video" ? videoRefImages : imageRefImages;
+  const setRefImages = genMode === "video" ? setVideoRefImages : setImageRefImages;
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      const newImages = [...refImages];
+      newImages[index] = url;
+      setRefImages(newImages);
+    }
+  };
+
+  const removeFrame = (index: number) => {
+    const newImages = [...refImages];
+    newImages[index] = null;
+    setRefImages(newImages);
+  };
+
+  const pollTaskStatus = async (taskId: string) => {
+    const check = async () => {
+      try {
+        const res = await fetch(`/api/generate/status?taskId=${taskId}`);
+        const data = await res.json();
+
+        if (data.status === 'succeeded') {
+          // Video API returns: data.content.video_url
+          // Image API (if async) might return: data.result.url or data.data[0].url
+          setGenResultUrl(data.content?.video_url || data.result?.url || data.data?.[0]?.url);
+          setGenStatus("completed");
+          setIsGenerating(false);
+        } else if (data.status === 'failed') {
+          alert('Generation failed: ' + (data.message || 'Unknown error'));
+          setGenStatus("idle");
+          setIsGenerating(false);
+        } else {
+          // Keep polling
+          setTimeout(check, 3000);
+        }
+      } catch (err) {
+        console.error('Polling error:', err);
+        setTimeout(check, 5000);
+      }
+    };
+    check();
+  };
+
+  const blobToBase64 = (blobUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      fetch(blobUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(reject);
+    });
+  };
+
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
+    setIsGenerating(true);
+    setGenStatus("processing");
+    setGenResultUrl(null);
+
+    try {
+      // Resolve blobs to base64 before sending
+      const resolvedRefImages = await Promise.all(refImages.map(async (img) => {
+        if (!img) return null;
+        if (img.startsWith('blob:')) {
+          try {
+            return await blobToBase64(img);
+          } catch (e) {
+            console.error('Failed to convert blob:', e);
+            return null;
+          }
+        }
+        return img;
+      }));
+
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: genMode,
+          prompt,
+          refImages: resolvedRefImages
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to start generation');
+
+      if (genMode === 'video' && data.task_id) {
+        pollTaskStatus(data.task_id);
+      } else if (genMode === 'image' && data.task_id) {
+        // Image generation can also be async
+        pollTaskStatus(data.task_id);
+      } else if (genMode === 'image' && data.data && data.data[0]) {
+        // Image API returns immediate result in data[0].url
+        setGenResultUrl(data.data[0].url);
+        setGenStatus("completed");
+        setIsGenerating(false);
+      } else {
+        // Fallback for other immediate results
+        setGenResultUrl(data.url || data.video_url);
+        setGenStatus("completed");
+        setIsGenerating(false);
+      }
+    } catch (error: any) {
+      alert(error.message);
+      setGenStatus("idle");
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
 
@@ -74,6 +217,12 @@ export default function KrissKrossJobs() {
           <div className="hidden lg:flex flex-1 items-center justify-end gap-10 px-8">
             <a href="#browse-projects" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">Browse Projects</a>
             <a href="#how-it-works" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">How It Works</a>
+            <a
+              href="#ai-generator"
+              className="group flex items-center gap-1.5 text-sm font-bold text-primary transition-all whitespace-nowrap leading-none px-4 py-2 bg-primary/5 rounded-full border border-primary/10 hover:bg-primary hover:text-white"
+            >
+              <Sparkles className="h-3.5 w-3.5" /> Free AI Tool
+            </a>
           </div>
 
           {/* Right Side Buttons */}
@@ -126,6 +275,210 @@ export default function KrissKrossJobs() {
           <div className="flex items-center gap-3">
             <CheckCircle className="h-6 w-6 text-primary" />
             Vetted Brands Only
+          </div>
+        </div>
+      </section>
+
+      {/* 3. AI GENERATOR (LEAD MAGNET) */}
+      <section id="ai-generator" className="mx-auto max-w-7xl px-6 py-20 scroll-mt-20">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-brand-dark p-8 md:p-16 shadow-2xl">
+          {/* Background Accents */}
+          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/20 blur-[100px]"></div>
+          <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-[#977DFF]/10 blur-[100px]"></div>
+
+          <div className="relative z-10 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-primary mb-6">
+                <Sparkles className="h-4 w-4" /> Creator Studio Beta
+              </div>
+              <h2 className="text-3xl font-black text-white md:text-5xl leading-tight">
+                Create your first <br />
+                <span className="text-primary italic">proposal asset</span> with AI
+              </h2>
+              <p className="mt-6 text-lg text-slate-400 font-medium max-w-lg">
+                Aspiring creators: Use our free tool to generate stunning AI visuals for your next job application. Show brands what you can do before you even talk to them.
+              </p>
+
+              <div className="mt-10 space-y-6">
+                {/* Tabs */}
+                <div className="flex gap-2 p-1.5 bg-white/5 rounded-2xl w-fit border border-white/10">
+                  <button
+                    onClick={() => setGenMode("video")}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${genMode === "video" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:text-white"}`}
+                  >
+                    <Video className="h-4 w-4" /> Video
+                  </button>
+                  <button
+                    onClick={() => setGenMode("image")}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${genMode === "image" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-400 hover:text-white"}`}
+                  >
+                    <ImageIcon className="h-4 w-4" /> Image
+                  </button>
+                </div>
+
+                {/* Reference Images (Formerly Frame Uploaders) */}
+                <div className="flex items-center gap-4 py-2">
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">
+                      {genMode === "video" ? "First Frame & Last Frame" : "Reference Images (Figure 1, 2, 3)"}
+                    </label>
+                    <div className="flex items-center gap-4">
+                      {refImages.map((img, idx) => {
+                        // Get label based on mode
+                        let label = "";
+                        let figLabel = "";
+                        if (genMode === "video") {
+                          label = idx === 0 ? "First Frame" : "Last Frame";
+                          figLabel = idx === 0 ? "1ST" : "LAST";
+                        } else {
+                          label = `Add Fig ${idx + 1}`;
+                          figLabel = `FIG ${idx + 1}`;
+                        }
+
+                        return (
+                          <div key={idx} className="relative flex-1 aspect-square rounded-2xl bg-white/5 border border-dashed border-white/20 hover:border-primary/50 transition-all overflow-hidden group">
+                            {img ? (
+                              <div className="relative h-full w-full">
+                                <img src={img} className="h-full w-full object-cover" alt={`Ref ${idx + 1}`} />
+                                <button
+                                  type="button"
+                                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeFrame(idx); }}
+                                  className="absolute top-2 right-2 z-30 flex h-6 w-6 items-center justify-center rounded-full bg-brand-dark/80 text-white shadow-lg hover:bg-primary transition-all backdrop-blur-sm"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                                <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-brand-dark/60 backdrop-blur-sm text-[10px] font-black text-white/70">{figLabel}</div>
+                              </div>
+                            ) : (
+                              <label className="absolute inset-0 z-10 flex flex-col items-center justify-center text-slate-500 group-hover:text-primary transition-colors cursor-pointer">
+                                <Plus className="h-5 w-5 mb-1" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">{label}</span>
+                                <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, idx)} />
+                              </label>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder={genMode === "video" ? "e.g. A cinematic close-up of a skincare bottle with water splashes..." : "e.g. A high-fashion flatlay of winter boots on marble background..."}
+                    className="w-full h-32 rounded-3xl bg-white/5 border border-white/10 p-6 text-white text-lg placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all resize-none font-medium leading-relaxed"
+                  />
+                </div>
+
+                <button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !prompt.trim()}
+                  className="group relative w-full overflow-hidden rounded-2xl bg-primary py-5 text-lg font-black text-white shadow-2xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                >
+                  <div className="relative z-10 flex items-center justify-center gap-3">
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                        Generating Your {genMode === "video" ? "Video" : "Image"}...
+                      </>
+                    ) : (
+                      <>
+                        Generate Free {genMode === "video" ? "Video" : "Image"} <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#6C8DFF] to-primary bg-[length:200%_100%] animate-shimmer opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </button>
+              </div>
+            </div>
+
+            <div className="relative lg:ml-auto w-full max-w-md aspect-square">
+              {/* Preview Card */}
+              <div className="h-full w-full rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden flex flex-col items-center justify-center text-center p-8 relative">
+
+                {genStatus === "idle" && (
+                  <div className="space-y-6">
+                    <div className="mx-auto w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center">
+                      <Sparkles className="h-10 w-10 text-slate-700" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-white mb-2">Ready to Create?</h4>
+                      <p className="text-slate-500 text-sm font-medium">Your generated asset will appear here. No login required for your first sample.</p>
+                    </div>
+                  </div>
+                )}
+
+                {genStatus === "processing" && (
+                  <div className="space-y-8 w-full max-w-xs">
+                    <div className="relative mx-auto w-32 h-32">
+                      <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
+                      <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                      <div className="absolute inset-4 rounded-3xl bg-primary/10 flex items-center justify-center">
+                        {genMode === "video" ? <Video className="h-8 w-8 text-primary" /> : <ImageIcon className="h-8 w-8 text-primary" />}
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-primary animate-progress-fast"></div>
+                      </div>
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <span>Rendering AI Model</span>
+                        <span className="text-primary">In Progress</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {genStatus === "completed" && (
+                  <div className="absolute inset-0 bg-slate-200 animate-pulse flex flex-col">
+                    {/* Real Result Preview */}
+                    {genResultUrl ? (
+                      <div className="h-full w-full relative">
+                        {genMode === "video" ? (
+                          <video src={genResultUrl} controls className="h-full w-full object-cover" />
+                        ) : (
+                          <img src={genResultUrl} className="h-full w-full object-cover" alt="Generated asset" />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex-1 flex items-center justify-center">
+                        <p className="text-brand-dark font-black text-xs uppercase tracking-[0.2em] opacity-40">Sample Rendered Successfully</p>
+                      </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-md flex flex-col items-center justify-center p-10 text-center animate-in fade-in duration-500">
+                      <div className="mb-6 rounded-2xl bg-primary/20 p-4">
+                        <CheckCircle2 className="h-10 w-10 text-primary" />
+                      </div>
+                      <h4 className="text-2xl font-black text-white mb-4">Sample Created!</h4>
+                      <p className="text-slate-400 text-sm font-medium mb-8">
+                        Sign up to download your high-resolution {genMode} and start applying to brands.
+                      </p>
+                      <button
+                        onClick={() => setIsSignupModalOpen(true)}
+                        className="w-full rounded-xl bg-white text-brand-dark py-4 text-sm font-black shadow-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+                      >
+                        Claim Your Asset & Apply <Download className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => { setGenStatus("idle"); setGenResultUrl(null); }}
+                        className="mt-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
+                      >
+                        Try Another Prompt
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Floating Tags for flair */}
+                <div className="absolute top-4 left-4 flex gap-2">
+                  <div className="px-3 py-1 bg-white/5 rounded-full text-[8px] font-bold text-slate-500 border border-white/5 uppercase">1080p</div>
+                  <div className="px-3 py-1 bg-white/5 rounded-full text-[8px] font-bold text-slate-500 border border-white/5 uppercase">AI Rendered</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
