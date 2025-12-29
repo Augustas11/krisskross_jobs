@@ -121,16 +121,25 @@ export default function KrissKrossJobs() {
         if (data.status === 'succeeded') {
           // Video API returns: data.content.video_url
           // Image API (if async) might return: data.result.url or data.data[0].url
-          setGenResultUrl(data.content?.video_url || data.result?.url || data.data?.[0]?.url);
-          setGenStatus("completed");
-          setIsGenerating(false);
+          const videoUrl = data.content?.video_url || data.result?.url || data.data?.[0]?.url;
 
-          // Track successful generation
-          addGeneration(genMode);
-          setRemainingGenerations({
-            video: getRemainingGenerations('video'),
-            image: getRemainingGenerations('image')
-          });
+          if (videoUrl) {
+            setGenResultUrl(videoUrl);
+            setGenStatus("completed");
+            setIsGenerating(false);
+
+            // Track successful generation
+            addGeneration(genMode);
+            setRemainingGenerations({
+              video: getRemainingGenerations('video'),
+              image: getRemainingGenerations('image')
+            });
+          } else {
+            console.error('Generation succeeded but no URL found. Data:', data);
+            alert('Generation error: Video URL is missing from response. Please try again.');
+            setGenStatus("idle");
+            setIsGenerating(false);
+          }
         } else if (data.status === 'failed') {
           alert('Generation failed: ' + (data.message || 'Unknown error'));
           setGenStatus("idle");
