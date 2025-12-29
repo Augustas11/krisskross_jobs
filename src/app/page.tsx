@@ -486,7 +486,7 @@ export default function KrissKrossJobs() {
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Platform</h4>
               <ul className="space-y-4 text-sm font-medium">
-                {["Browse Jobs", "How It Works", "Pricing", "Success Stories"].map(l => (
+                {["Browse Jobs", "How It Works", "Success Stories"].map(l => (
                   <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
                 ))}
               </ul>
