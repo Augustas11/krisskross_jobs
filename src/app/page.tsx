@@ -49,114 +49,6 @@ const PROJECTS = [
     totalSpent: "$21,000+",
     hiringRate: "97%",
     brandInitial: "S"
-  },
-  {
-    id: 4,
-    title: "Jewelry & Accessories Video Campaign",
-    budget: "$675 total ($45 per video)",
-    quantity: "15 videos",
-    posted: "3 days ago",
-    applicants: "9 creators applied",
-    tags: ["Accessories", "Video"],
-    totalSpent: "$5,000+",
-    hiringRate: "85%",
-    brandInitial: "B"
-  },
-  {
-    id: 5,
-    title: "Tech Gadget Product Showcase Videos",
-    budget: "$1,050 total ($70 per video)",
-    quantity: "15 videos",
-    posted: "5 days ago",
-    applicants: "14 creators applied",
-    tags: ["Tech", "Video"],
-    totalSpent: "$12,000+",
-    hiringRate: "90%",
-    brandInitial: "B"
-  },
-  {
-    id: 6,
-    title: "Home & Living Lifestyle Image Package",
-    budget: "$600 total ($40 per image)",
-    quantity: "15 images",
-    posted: "1 day ago",
-    applicants: "7 creators applied",
-    tags: ["Lifestyle", "Images"],
-    totalSpent: "$3,500+",
-    hiringRate: "78%",
-    brandInitial: "B"
-  },
-  {
-    id: 7,
-    title: "Food & Beverage TikTok Series",
-    budget: "$900 total ($60 per video)",
-    quantity: "15 videos",
-    posted: "2 days ago",
-    applicants: "11 creators applied",
-    tags: ["Food", "TikTok"],
-    totalSpent: "$9,800+",
-    hiringRate: "92%",
-    brandInitial: "B"
-  },
-  {
-    id: 8,
-    title: "Fitness Apparel Video Collection",
-    budget: "$825 total ($55 per video)",
-    quantity: "15 videos",
-    posted: "6 days ago",
-    applicants: "16 creators applied",
-    tags: ["Fitness", "Video"],
-    totalSpent: "$15,200+",
-    hiringRate: "95%",
-    brandInitial: "B"
-  },
-  {
-    id: 9,
-    title: "French Language Product Videos Needed",
-    budget: "$975 total ($65 per video)",
-    quantity: "15 videos",
-    posted: "3 days ago",
-    applicants: "6 creators applied",
-    tags: ["Bilingual", "French", "Video"],
-    totalSpent: "$4,200+",
-    hiringRate: "82%",
-    brandInitial: "B"
-  },
-  {
-    id: 10,
-    title: "Pet Products TikTok Content",
-    budget: "$675 total ($45 per video)",
-    quantity: "15 videos",
-    posted: "4 days ago",
-    applicants: "13 creators applied",
-    tags: ["Pets", "TikTok"],
-    totalSpent: "$7,600+",
-    hiringRate: "89%",
-    brandInitial: "B"
-  },
-  {
-    id: 11,
-    title: "Kids & Baby Products Video Set",
-    budget: "$750 total ($50 per video)",
-    quantity: "15 videos",
-    posted: "2 days ago",
-    applicants: "10 creators applied",
-    tags: ["Kids", "Video"],
-    totalSpent: "$6,300+",
-    hiringRate: "87%",
-    brandInitial: "B"
-  },
-  {
-    id: 12,
-    title: "General Product Image Generation",
-    budget: "$375 total ($25 per image)",
-    quantity: "15 images",
-    posted: "1 day ago",
-    applicants: "20 creators applied",
-    tags: ["General", "Images"],
-    totalSpent: "$1,800+",
-    hiringRate: "75%",
-    brandInitial: "B"
   }
 ];
 
@@ -634,12 +526,12 @@ export default function KrissKrossJobs() {
 
                     <div className="space-y-4 pt-4 border-t border-slate-100">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Total Spent</span>
-                        <span className="font-bold text-slate-900">{selectedJob.totalSpent || "$10,000+"}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
                         <span className="text-slate-500">Hiring Rate</span>
                         <span className="font-bold text-slate-900">{selectedJob.hiringRate || "90%"}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">Verified Status</span>
+                        <span className="font-bold text-[#10B981]">Managed Account</span>
                       </div>
                     </div>
                   </div>
