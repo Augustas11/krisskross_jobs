@@ -279,33 +279,29 @@ export default function KrissKrossJobs() {
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Platform</h4>
               <ul className="space-y-4 text-sm font-bold">
-                {["Browse Projects", "How It Works", "For Creators", "For Brands"].map(l => (
-                  <li key={l}><a href="#" className="hover:text-primary transition-colors">{l}</a></li>
-                ))}
+                <li key="Browse Projects"><a href="#browse-projects" className="hover:text-primary transition-colors">Browse Projects</a></li>
+                <li key="How It Works"><a href="#how-it-works" className="hover:text-primary transition-colors">How It Works</a></li>
               </ul>
             </div>
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Resources</h4>
               <ul className="space-y-4 text-sm font-bold">
-                {["Creator Guide", "Success Stories", "Portfolio Tips", "Help Center"].map(l => (
-                  <li key={l}><a href="#" className="hover:text-primary transition-colors">{l}</a></li>
-                ))}
+                <li key="Creator Guide"><a href="/creator-guide" className="hover:text-primary transition-colors">Creator Guide</a></li>
+                <li key="Success Stories"><a href="/success-stories" className="hover:text-primary transition-colors">Success Stories</a></li>
+                <li key="Portfolio Tips"><a href="#" className="hover:text-primary transition-colors">Portfolio Tips</a></li>
+                <li key="Help Center"><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
               </ul>
             </div>
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Company</h4>
               <ul className="space-y-4 text-sm font-bold">
-                {["About KrissKross", "Terms of Service", "Privacy Policy", "Contact"].map(l => (
-                  <li key={l}><a href="#" className="hover:text-primary transition-colors">{l}</a></li>
-                ))}
+                <li key="About KrissKross"><a href="https://www.krisskross.ai" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">About KrissKross</a></li>
+                <li key="Contact"><a href="mailto:hello@krisskross.ai" className="hover:text-primary transition-colors">Contact</a></li>
               </ul>
             </div>
           </div>
           <div className="mt-20 border-t border-slate-800 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-sm font-bold">© 2025 KrissKross Jobs. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <span className="text-xs font-black uppercase tracking-widest text-[#10B981]">Status: Online</span>
-            </div>
           </div>
         </div>
       </footer>
