@@ -216,11 +216,14 @@ export default function KrissKrossJobs() {
         throw new Error(`Error ${res.status}: ${data.error || data.message || res.statusText}`);
       }
 
-      if (genMode === 'video' && data.task_id) {
-        pollTaskStatus(data.task_id);
-      } else if (genMode === 'image' && data.task_id) {
+      // Extract task ID (BytePlus uses 'id' for Seedance, some endpoints use 'task_id')
+      const taskId = data.task_id || data.id;
+
+      if (genMode === 'video' && taskId) {
+        pollTaskStatus(taskId);
+      } else if (genMode === 'image' && taskId) {
         // Image generation can also be async
-        pollTaskStatus(data.task_id);
+        pollTaskStatus(taskId);
       } else if (genMode === 'image' && data.data && data.data[0]) {
         // Image API returns immediate result in data[0].url
         setGenResultUrl(data.data[0].url);
@@ -234,17 +237,24 @@ export default function KrissKrossJobs() {
           image: getRemainingGenerations('image')
         });
       } else {
-        // Fallback for other immediate results
-        setGenResultUrl(data.url || data.video_url);
-        setGenStatus("completed");
-        setIsGenerating(false);
+        // Fallback: Check if we have an immediate URL
+        const directUrl = data.url || data.video_url || data.data?.[0]?.url;
 
-        // Track successful generation
-        addGeneration(genMode);
-        setRemainingGenerations({
-          video: getRemainingGenerations('video'),
-          image: getRemainingGenerations('image')
-        });
+        if (directUrl) {
+          setGenResultUrl(directUrl);
+          setGenStatus("completed");
+          setIsGenerating(false);
+
+          // Track successful generation
+          addGeneration(genMode);
+          setRemainingGenerations({
+            video: getRemainingGenerations('video'),
+            image: getRemainingGenerations('image')
+          });
+        } else {
+          console.error('Unknown response format (no ID, no URL):', data);
+          throw new Error('Received successful response but no content URL or Task ID found.');
+        }
       }
     } catch (error: any) {
       alert(error.message);
