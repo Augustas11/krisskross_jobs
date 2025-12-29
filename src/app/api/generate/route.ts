@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
 
             // For image generation, we'll combine the prompt with a note about reference images
             // since this endpoint uses a simple prompt-based API
-            let enhancedPrompt = prompt;
+            // Force photorealistic style to avoid default anime look
+            let enhancedPrompt = `Photorealistic, 8k, realistic lighting, highly detailed. ${prompt}`;
 
             // Note: The /images/generations endpoint doesn't support reference images in the same way
             // We're using the prompt-based approach as shown in the curl example
