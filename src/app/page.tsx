@@ -162,7 +162,7 @@ export default function KrissKrossJobs() {
                 </div>
               </div>
 
-              <div className="mt-8 border-t border-slate-100 pt-6">
+              <div className="mt-auto border-t border-slate-100 pt-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Activity</span>
@@ -180,7 +180,7 @@ export default function KrissKrossJobs() {
                   ))}
                 </div>
 
-                <div className="mt-auto">
+                <div>
                   <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-black text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 group-hover:scale-[1.02]">
                     View Project Details <ArrowRight className="h-4 w-4" />
                   </button>
