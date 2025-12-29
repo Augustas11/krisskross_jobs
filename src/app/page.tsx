@@ -5,163 +5,119 @@ import {
   Search, Video, ImageIcon, Sparkles, MessageSquare, Download,
   ChevronRight, ArrowRight, Star, TrendingUp, Clock, Zap,
   Menu, X, Bell, DollarSign, CheckCircle2, Globe, ChevronLeft,
-  Briefcase, Users, LayoutGrid, Filter, ExternalLink
+  Briefcase, Users, LayoutGrid, Filter, ExternalLink, Target, CheckCircle
 } from "lucide-react";
 
 // --- Mock Data ---
 
-const JOBS = [
+const PROJECTS = [
   {
     id: 1,
-    title: "Fashion Video Expert - Dress & Apparel",
-    price: "$80 - $150 / video",
-    avatars: ["#3B82F6", "#8B5CF6", "#EC4899"],
-    hiredCount: 24,
-    earnings: "$2,400",
-    tags: ["Fashion", "Video", "9:16"],
-    rating: 4.9,
-    reviews: 32,
-    responseTime: "< 1 hour",
-    totalEarnings: "$12,400",
-    jobsCompleted: 89,
-    onTimeDelivery: "98%",
-    repeatClients: "67%",
-    creator: "Sarah Chen",
-    description: "I specialize in high-converting AI fashion videos using advanced motion synthesis. My workflow ensures realistic fabric movement and lighting that sells products on TikTok Shop.",
-    deliverables: ["1x 15-30s TikTok Video", "Color grading & transitions", "Copyright-free background music", "2 Revisions"],
-    turnaround: "24-48 hours",
+    title: "Fashion Brand Needs Summer Dress Videos",
+    budget: "$1,200 total ($80 per video)",
+    quantity: "15 videos",
+    posted: "2 days ago",
+    applicants: "12 creators applied",
+    tags: ["Fashion", "Video", "Urgent"],
   },
   {
     id: 2,
-    title: "Product Image Generator - Beauty & Cosmetics",
-    price: "$30 - $60 / batch",
-    avatars: ["#10B981", "#F59E0B", "#EF4444"],
-    hiredCount: 18,
-    earnings: "$1,800",
-    tags: ["Beauty", "Images", "Batch"],
-    rating: 4.8,
-    reviews: 24,
-    creator: "Mike Rodriguez",
+    title: "Beauty Brand Seeks Product Image Set",
+    budget: "$450 total ($30 per image)",
+    quantity: "15 images",
+    posted: "1 day ago",
+    applicants: "5 creators applied",
+    tags: ["Beauty", "Images"],
   },
   {
     id: 3,
-    title: "Bilingual Creator | English & Spanish TikTok",
-    price: "$60 - $120 / video",
-    avatars: ["#6366F1", "#14B8A6", "#F97316"],
-    hiredCount: 31,
-    earnings: "$3,100",
+    title: "Bilingual TikTok Videos (English & Spanish)",
+    budget: "$900 total ($60 per video)",
+    quantity: "15 videos",
+    posted: "4 days ago",
+    applicants: "18 creators applied",
     tags: ["Bilingual", "TikTok", "Video"],
-    rating: 5.0,
-    reviews: 45,
-    creator: "Jessica Park",
   },
   {
     id: 4,
-    title: "Accessory & Jewelry Video Specialist",
-    price: "$50 - $90 / video",
-    avatars: ["#A855F7", "#F43F5E", "#06B6D4"],
-    hiredCount: 15,
-    earnings: "$1,350",
-    tags: ["Accessories", "Video", "9:16"],
-    rating: 4.7,
-    reviews: 19,
-    creator: "Alex Thompson",
+    title: "Jewelry & Accessories Video Campaign",
+    budget: "$675 total ($45 per video)",
+    quantity: "15 videos",
+    posted: "3 days ago",
+    applicants: "9 creators applied",
+    tags: ["Accessories", "Video"],
   },
   {
     id: 5,
-    title: "Tech Product Video - Gadgets & Electronics",
-    price: "$70 - $130 / video",
-    avatars: ["#1E293B", "#475569", "#94A3B8"],
-    hiredCount: 19,
-    earnings: "$1,900",
-    tags: ["Tech", "Video", "Product"],
-    rating: 4.9,
-    reviews: 28,
-    creator: "David Kim",
+    title: "Tech Gadget Product Showcase Videos",
+    budget: "$1,050 total ($70 per video)",
+    quantity: "15 videos",
+    posted: "5 days ago",
+    applicants: "14 creators applied",
+    tags: ["Tech", "Video"],
   },
   {
     id: 6,
-    title: "Lifestyle Image Creator - Home & Living",
-    price: "$40 - $80 / batch",
-    avatars: ["#D97706", "#059669", "#2563EB"],
-    hiredCount: 22,
-    earnings: "$2,200",
-    tags: ["Lifestyle", "Images", "Batch"],
-    rating: 4.6,
-    reviews: 15,
-    creator: "Emily Davis",
+    title: "Home & Living Lifestyle Image Package",
+    budget: "$600 total ($40 per image)",
+    quantity: "15 images",
+    posted: "1 day ago",
+    applicants: "7 creators applied",
+    tags: ["Lifestyle", "Images"],
   },
   {
     id: 7,
-    title: "Food & Beverage Product Video Expert",
-    price: "$60 - $110 / video",
-    avatars: ["#DC2626", "#F97316", "#FACC15"],
-    hiredCount: 27,
-    earnings: "$2,700",
-    tags: ["Food", "Video", "TikTok"],
-    rating: 4.9,
-    reviews: 36,
-    creator: "Chris Evans",
+    title: "Food & Beverage TikTok Series",
+    budget: "$900 total ($60 per video)",
+    quantity: "15 videos",
+    posted: "2 days ago",
+    applicants: "11 creators applied",
+    tags: ["Food", "TikTok"],
   },
   {
     id: 8,
-    title: "Fitness & Sportswear Video Creator",
-    price: "$55 - $100 / video",
-    avatars: ["#0284C7", "#7C3AED", "#DB2777"],
-    hiredCount: 14,
-    earnings: "$1,400",
-    tags: ["Fitness", "Video", "9:16"],
-    rating: 4.8,
-    reviews: 21,
-    creator: "Sophie Lane",
+    title: "Fitness Apparel Video Collection",
+    budget: "$825 total ($55 per video)",
+    quantity: "15 videos",
+    posted: "6 days ago",
+    applicants: "16 creators applied",
+    tags: ["Fitness", "Video"],
   },
   {
     id: 9,
-    title: "Bilingual Creator | English & French",
-    price: "$65 - $125 / video",
-    avatars: ["#4F46E5", "#0EA5E9", "#10B981"],
-    hiredCount: 20,
-    earnings: "$2,000",
-    tags: ["Bilingual", "Video", "French"],
-    rating: 4.7,
-    reviews: 17,
-    creator: "Jean Dupont",
+    title: "French Language Product Videos Needed",
+    budget: "$975 total ($65 per video)",
+    quantity: "15 videos",
+    posted: "3 days ago",
+    applicants: "6 creators applied",
+    tags: ["Bilingual", "French", "Video"],
   },
   {
     id: 10,
-    title: "Pet Product Video Specialist",
-    price: "$45 - $85 / video",
-    avatars: ["#EA580C", "#CA8A04", "#65A30D"],
-    hiredCount: 16,
-    earnings: "$1,600",
-    tags: ["Pets", "Video", "TikTok"],
-    rating: 4.8,
-    reviews: 23,
-    creator: "Bella Reed",
+    title: "Pet Products TikTok Content",
+    budget: "$675 total ($45 per video)",
+    quantity: "15 videos",
+    posted: "4 days ago",
+    applicants: "13 creators applied",
+    tags: ["Pets", "TikTok"],
   },
   {
     id: 11,
-    title: "Kids & Baby Product Video Expert",
-    price: "$50 - $95 / video",
-    avatars: ["#FB7185", "#38BDF8", "#FCD34D"],
-    hiredCount: 21,
-    earnings: "$2,100",
-    tags: ["Kids", "Video", "Product"],
-    rating: 4.9,
-    reviews: 31,
-    creator: "Liam Scott",
+    title: "Kids & Baby Products Video Set",
+    budget: "$750 total ($50 per video)",
+    quantity: "15 videos",
+    posted: "2 days ago",
+    applicants: "10 creators applied",
+    tags: ["Kids", "Video"],
   },
   {
     id: 12,
-    title: "General Product Image Generator",
-    price: "$25 - $50 / batch",
-    avatars: ["#94A3B8", "#64748B", "#475569"],
-    hiredCount: 30,
-    earnings: "$3,000",
-    tags: ["General", "Images", "Batch"],
-    rating: 4.5,
-    reviews: 40,
-    creator: "Noah Walker",
+    title: "General Product Image Generation",
+    budget: "$375 total ($25 per image)",
+    quantity: "15 images",
+    posted: "1 day ago",
+    applicants: "20 creators applied",
+    tags: ["General", "Images"],
   }
 ];
 
@@ -172,7 +128,7 @@ export default function KrissKrossJobs() {
   const [isPostJobModalOpen, setIsPostJobModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All Jobs");
+  const [activeCategory, setActiveCategory] = useState("All Projects");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Pagination state (simulated)
@@ -204,15 +160,10 @@ export default function KrissKrossJobs() {
 
           {/* Navigation Links - Centered */}
           <div className="hidden lg:flex flex-1 items-center justify-center gap-10 px-8">
-            {["Browse Jobs", "How It Works", "For Sellers"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-sm font-medium text-slate-600 hover:text-[#0040E5] transition-colors whitespace-nowrap"
-              >
-                {item}
-              </a>
-            ))}
+            <a href="#browse-projects" className="text-sm font-medium text-slate-600 hover:text-[#0040E5] transition-colors whitespace-nowrap">Browse Projects</a>
+            <a href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-[#0040E5] transition-colors whitespace-nowrap">How It Works</a>
+            <a href="#for-creators" className="text-sm font-bold text-[#0040E5] transition-colors whitespace-nowrap">For Creators</a>
+            <a href="#for-brands" className="text-xs font-medium text-slate-400 hover:text-[#0040E5] transition-colors whitespace-nowrap">For Brands</a>
           </div>
 
           {/* Right Side Buttons */}
@@ -226,10 +177,10 @@ export default function KrissKrossJobs() {
               <button className="px-3 py-1.5 text-xs font-semibold text-slate-500 hover:text-[#0040E5]">Most pay</button>
             </div>
             <button
-              onClick={() => setIsPostJobModalOpen(true)}
+              onClick={() => setIsSignupModalOpen(true)}
               className="rounded-full bg-[#0040E5] px-5 py-2 text-sm font-bold text-white shadow-lg shadow-[#0040E5]/20 hover:bg-[#0036C2] transition-all active:scale-95 whitespace-nowrap"
             >
-              Post a Job
+              Start Portfolio
             </button>
             <button className="lg:hidden ml-2" onClick={() => setMobileMenuOpen(true)}>
               <Menu className="h-6 w-6" />
@@ -252,21 +203,27 @@ export default function KrissKrossJobs() {
             onClick={() => setIsSignupModalOpen(true)}
             className="w-full sm:w-auto rounded-full bg-[#0040E5] px-10 py-5 text-lg font-bold text-white shadow-xl shadow-[#0040E5]/30 hover:bg-[#0036C2] transition-all active:scale-95"
           >
-            Become a Creator
+            Start Your Portfolio
+          </button>
+          <button
+            onClick={() => { document.getElementById('browse-projects')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="w-full sm:w-auto rounded-full border-2 border-[#0040E5] px-10 py-5 text-lg font-bold text-[#0040E5] hover:bg-[#0040E5]/5 transition-all active:scale-95"
+          >
+            Browse Available Projects
           </button>
         </div>
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm font-semibold text-slate-500">
           <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-[#0040E5]" />
-            700+ Active Creators
+            <Target className="h-5 w-5 text-[#0040E5]" />
+            New Projects Posted Daily
           </div>
           <div className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-[#10B981]" />
-            $50-150 Average Project
+            <Zap className="h-5 w-5 text-[#10B981]" />
+            Get Your First Client in 72 Hours
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[#0040E5]" />
-            10,000+ Jobs Completed
+            <CheckCircle className="h-5 w-5 text-[#0040E5]" />
+            Only Vetted Brands
           </div>
         </div>
       </section>
@@ -275,7 +232,7 @@ export default function KrissKrossJobs() {
       <div className="sticky top-16 z-50 border-y border-slate-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4">
           <div className="flex flex-1 items-center gap-2 overflow-x-auto pb-1 no-scrollbar sm:pb-0">
-            {["All Jobs", "TikTok Videos", "Product Images", "Lifestyle Content", "Fashion & Beauty", "Tech & Gadgets"].map((cat) => (
+            {["All Projects", "TikTok Videos", "Product Images", "Lifestyle Content", "Fashion & Beauty", "Tech & Gadgets"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
@@ -298,38 +255,43 @@ export default function KrissKrossJobs() {
         </div>
       </div>
 
-      {/* 4. JOB LISTING GRID */}
-      <section className="mx-auto max-w-[1440px] px-6 py-12">
+      {/* 4. PROJECT LISTING GRID */}
+      <section id="browse-projects" className="mx-auto max-w-[1440px] px-6 py-12">
+        <h2 className="text-2xl font-bold mb-6">Available Projects for AI Creators</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {JOBS.map((job) => (
+          {PROJECTS.map((project) => (
             <div
-              key={job.id}
-              onClick={() => setSelectedJob(job)}
-              className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:border-[#0040E5]/30"
+              key={project.id}
+              onClick={() => setSelectedJob(project)}
+              className="group cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-lg"
             >
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#0040E5] transition-colors">{job.title}</h3>
-              <p className="mt-1 text-sm font-medium text-slate-500">{job.price}</p>
-
-              <div className="mt-8 flex items-center justify-between">
-                <div className="flex -space-x-2">
-                  {job.avatars.map((color, i) => (
-                    <div key={i} className="h-8 w-8 rounded-full border-2 border-white" style={{ backgroundColor: color }} />
-                  ))}
-                </div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#10B981]">
-                  <DollarSign className="h-3.5 w-3.5" />
-                  {job.earnings}
-                </div>
+              <div className="flex items-start gap-2 mb-4">
+                <span className="text-xl">💼</span>
+                <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#0040E5] transition-colors leading-tight">
+                  {project.title}
+                </h3>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-slate-50 pt-4">
-                <span className="text-xs font-semibold text-slate-400">{job.hiredCount} hired this month</span>
-                <div className="flex gap-1">
-                  {job.tags.slice(0, 2).map(tag => (
-                    <span key={tag} className="rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500">{tag}</span>
-                  ))}
-                </div>
+              <div className="space-y-1 mb-4">
+                <p className="text-sm font-medium text-slate-600">Budget: {project.budget}</p>
+                <p className="text-sm font-medium text-slate-600">Quantity: {project.quantity} needed</p>
               </div>
+
+              <div className="flex flex-col gap-1 mb-6 border-t border-slate-50 pt-4">
+                <span className="text-xs text-slate-400">Posted {project.posted}</span>
+                <span className="text-xs font-bold text-[#0040E5]">{project.applicants}</span>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-6">
+                {project.tags.map(tag => (
+                  <span key={tag} className="rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">{tag}</span>
+                ))}
+              </div>
+
+              <button className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#0040E5] py-3 text-sm font-bold text-white transition-all hover:bg-[#0036C2]">
+                View Project Details
+                <ArrowRight className="h-4 w-4" />
+              </button>
             </div>
           ))}
         </div>
@@ -357,18 +319,18 @@ export default function KrissKrossJobs() {
 
 
 
-      {/* 7. HOW IT WORKS (SELLERS) */}
-      <section id="for-sellers" className="bg-white py-24">
+      {/* 7. HOW IT WORKS (CREATORS) */}
+      <section id="how-it-works" className="bg-white py-24 border-t border-slate-100">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Start Earning as an AI Creator</h2>
+          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">How to Get Your First Client</h2>
           <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
             {[
-              { icon: Sparkles, title: "Create Your Profile", desc: "Showcase your best AI-generated samples. Set your rates ($50-150 per project). Get verified in 24 hours.", color: "text-[#10B981]" },
-              { icon: Bell, title: "Receive Job Requests", desc: "Buyers browse your portfolio and send project inquiries. You choose which jobs to accept based on budget.", color: "text-[#10B981]" },
-              { icon: DollarSign, title: "Deliver & Get Paid", desc: "Generate content using AI tools. Upload deliverables via our secure dashboard. Receive payment within 48 hours.", color: "text-[#10B981]" }
+              { icon: Sparkles, title: "Build Your Portfolio", desc: "Showcase your best 3-5 AI-generated videos or images. Takes 10 minutes. No approval needed—go live immediately.", color: "text-[#0040E5]", bgColor: "bg-[#0040E5]/5" },
+              { icon: Search, title: "Browse & Apply to Projects", desc: "Filter by budget, deadline, and content type. Apply to projects that match your skills. Brands review applications within 24 hours.", color: "text-[#0040E5]", bgColor: "bg-[#0040E5]/5" },
+              { icon: DollarSign, title: "Deliver & Get Paid", desc: "Upload your work through our platform. Client reviews and approves. Get paid in 48 hours via PayPal or bank transfer. Build your reputation.", color: "text-[#10B981]", bgColor: "bg-[#ECFDF5]" }
             ].map((step, i) => (
               <div key={i} className="text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#ECFDF5] shadow-sm">
+                <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl ${step.bgColor} shadow-sm`}>
                   <step.icon className={`h-8 w-8 ${step.color}`} />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">{step.title}</h3>
@@ -377,14 +339,9 @@ export default function KrissKrossJobs() {
             ))}
           </div>
 
-          <div className="mx-auto mt-16 max-w-2xl rounded-2xl border border-[#10B981]/30 bg-[#ECFDF5] p-8 text-center">
-            <p className="text-xl font-bold text-[#065F46]">💰 Average creator earnings: $1,500-3,000/month</p>
-            <p className="mt-2 text-sm text-[#047857]">Top creators earn $5,000+/month with repeat clients</p>
-          </div>
-
           <div className="mt-12 text-center">
-            <button onClick={() => setIsSignupModalOpen(true)} className="rounded-full bg-[#10B981] px-10 py-4 text-base font-bold text-white shadow-xl shadow-[#10B981]/30 hover:bg-[#059669]">
-              Become a Creator
+            <button onClick={() => setIsSignupModalOpen(true)} className="rounded-full bg-[#0040E5] px-10 py-4 text-base font-bold text-white shadow-xl shadow-[#0040E5]/30 hover:bg-[#0036C2]">
+              Start Your Portfolio
             </button>
           </div>
         </div>
@@ -420,39 +377,48 @@ export default function KrissKrossJobs() {
 
       {/* 10. FAQ */}
       <section className="bg-[#F9FAFB] py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Frequently Asked Questions</h2>
-          <div className="mt-16 grid grid-cols-1 gap-16 md:grid-cols-2">
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-8">For Buyers</h3>
-              <div className="space-y-8">
-                {[
-                  { q: "How much does it cost to hire?", a: "Prices range from $25-150 per project depending on complexity. Product images start at $25-50 per batch. TikTok videos typically cost $50-100 each." },
-                  { q: "How long does delivery take?", a: "Most creators deliver within 24-48 hours. Rush orders (6-12 hours) available for 50% premium." },
-                  { q: "What if I'm not satisfied?", a: "All creators offer 1-2 free revisions. If still unsatisfied, request a refund through our dispute resolution system." }
-                ].map((item, i) => (
-                  <div key={i}>
-                    <h4 className="font-bold text-slate-900">{item.q}</h4>
-                    <p className="mt-2 text-slate-600 leading-relaxed text-sm">{item.a}</p>
-                  </div>
-                ))}
+        <div className="mx-auto max-w-3xl px-6">
+          <h2 className="text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Frequently Asked Questions for Creators</h2>
+          <div className="mt-16 space-y-12">
+            {[
+              {
+                q: "How do I get my first client?",
+                a: "Build a portfolio with 3-5 strong examples. Browse available projects and apply to ones matching your style. Most creators land their first client within 1-2 weeks. Pro tip: Apply within 24 hours of project posting for best chances."
+              },
+              {
+                q: "What if I don't get hired for projects I apply to?",
+                a: "We review portfolios that aren't getting traction and provide feedback. Make sure your samples clearly show the product and match TikTok Shop style (clean, bright, product-focused). Quality over quantity."
+              },
+              {
+                q: "How much can I realistically earn?",
+                a: "Beginners: $500-1,000/month part-time. Experienced creators with good reviews: $2,000-4,000/month. Top 10%: $5,000+/month. Your rate depends on quality, turnaround time, and client reviews."
+              },
+              {
+                q: "When do I get paid?",
+                a: "Free tier: 7 days after client approval. Pro tier ($20/month): 48 hours after approval. Payments via PayPal, Stripe, or direct bank transfer."
+              },
+              {
+                q: "What's the platform fee?",
+                a: "Free tier: 15% of project value. Pro tier: 10%. Enterprise: 5%. Fees cover payment protection, dispute resolution, and platform maintenance."
+              },
+              {
+                q: "Why not just find clients myself on Twitter or Fiverr?",
+                a: "You can! But KrissKross curates projects specifically for AI-generated TikTok content. We handle payment escrow, provide project briefs, and protect you from scope creep. Plus brands come to us—you don't cold DM."
+              },
+              {
+                q: "What tools do I need?",
+                a: "Any AI video/image generation tool works (Runway, Midjourney, Pika, KrissKross AI, etc.). Pro creators get 50 free KrissKross AI credits monthly as a bonus."
+              },
+              {
+                q: "Can I work with clients outside the platform?",
+                a: "After completing 3 projects with a client through KrissKross, you can work directly with them. We encourage long-term relationships but ask you use our platform initially for payment protection."
+              }
+            ].map((item, i) => (
+              <div key={i}>
+                <h4 className="text-lg font-bold text-slate-900">{item.q}</h4>
+                <p className="mt-3 text-slate-600 leading-relaxed">{item.a}</p>
               </div>
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-8">For Creators</h3>
-              <div className="space-y-8">
-                {[
-                  { q: "How much can I earn?", a: "Experienced creators earn $2,000-4,000/month. Top 10% can exceed $5,000/month by building repeat client bases." },
-                  { q: "What tools do I need?", a: "Any AI tool works (Runway, Midjourney, etc.). Pro creators get 50 free KrissKross AI credits monthly." },
-                  { q: "When do I get paid?", a: "Free tier: 7 days after delivery. Pro tier: 48 hours. Payments via PayPal, Stripe, or bank transfer." }
-                ].map((item, i) => (
-                  <div key={i}>
-                    <h4 className="font-bold text-slate-900">{item.q}</h4>
-                    <p className="mt-2 text-slate-600 leading-relaxed text-sm">{item.a}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -461,25 +427,35 @@ export default function KrissKrossJobs() {
       <section className="bg-gradient-to-r from-[#0040E5] to-[#6366F1] py-24">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <h2 className="text-4xl font-black text-white md:text-5xl lg:text-6xl">
-            Turn your AI work into a creator business
+            Ready to Turn Your AI Skills Into Client Work?
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-lg text-white/90 md:text-xl leading-relaxed">
-            Find brands actively hiring for TikTok Shop content—curated projects,
-            vetted clients, built for creators like you. Only on KrissKross Jobs.
+            Join creators landing their first client in 72 hours.
+            Build your portfolio, browse curated projects, get paid fast.
           </p>
-          <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-12 flex flex-col items-center justify-center gap-6">
             <button
               onClick={() => setIsSignupModalOpen(true)}
-              className="w-full sm:w-auto rounded-full bg-white px-10 py-5 text-base font-bold text-[#0040E5] shadow-2xl hover:bg-slate-50 active:scale-95 transition-all"
+              className="w-full sm:w-auto rounded-full bg-white px-12 py-6 text-xl font-bold text-[#0040E5] shadow-2xl hover:bg-slate-50 active:scale-95 transition-all"
             >
-              Become a Creator
+              Start Your Portfolio
             </button>
-            <button
-              onClick={() => setIsPostJobModalOpen(true)}
-              className="w-full sm:w-auto rounded-full border-2 border-white px-10 py-5 text-base font-bold text-white hover:bg-white/10 active:scale-95 transition-all"
-            >
-              Post a Job
-            </button>
+            <p className="text-white/80 font-medium">No approval needed. Go live in 10 minutes.</p>
+
+            <div className="flex flex-wrap items-center justify-center gap-8 mt-4 text-white">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5" />
+                <span>Curated projects daily</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5" />
+                <span>Payment protection included</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5" />
+                <span>Get paid in 48 hours (Pro tier)</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -489,18 +465,25 @@ export default function KrissKrossJobs() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-2 gap-12 md:grid-cols-4">
             <div>
-              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Platform</h4>
+              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">For Creators</h4>
               <ul className="space-y-4 text-sm font-medium">
-                {["Browse Jobs", "How It Works", "Success Stories"].map(l => (
+                {["Browse Projects", "How to Get Started", "Creator Pricing", "Success Stories"].map(l => (
                   <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
                 ))}
               </ul>
             </div>
-
             <div>
-              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">For Creators</h4>
+              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Resources</h4>
               <ul className="space-y-4 text-sm font-medium">
-                {["Become a Creator", "Creator Resources", "Earnings Calculator", "Best Practices"].map(l => (
+                {["Portfolio Examples", "Best Practices Guide", "Payment & Fees", "Help Center"].map(l => (
+                  <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Projects</h4>
+              <ul className="space-y-4 text-sm font-medium">
+                {["Fashion & Apparel", "Beauty & Cosmetics", "Tech & Gadgets", "Food & Beverage"].map(l => (
                   <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
                 ))}
               </ul>
@@ -508,7 +491,7 @@ export default function KrissKrossJobs() {
             <div>
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Company</h4>
               <ul className="space-y-4 text-sm font-medium">
-                {["About Us", "Contact", "Terms of Service", "Privacy Policy"].map(l => (
+                {["About Us", "Contact Support", "Terms of Service", "Privacy Policy"].map(l => (
                   <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
                 ))}
               </ul>
@@ -522,11 +505,11 @@ export default function KrissKrossJobs() {
 
       {/* --- MODALS --- */}
 
-      {/* JOB DETAIL MODAL */}
+      {/* PROJECT DETAIL MODAL */}
       {selectedJob && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-6 lg:p-12 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSelectedJob(null)}></div>
-          <div className="relative flex h-full w-full max-w-7xl overflow-hidden rounded-none border border-slate-200 bg-white shadow-2xl md:rounded-3xl animate-in slide-in-from-bottom-8 duration-500">
+          <div className="relative flex h-full w-full max-w-5xl overflow-hidden rounded-none border border-slate-200 bg-white shadow-2xl md:rounded-3xl animate-in slide-in-from-bottom-8 duration-500">
             <button
               onClick={() => setSelectedJob(null)}
               className="absolute right-6 top-6 z-10 rounded-full bg-slate-100 p-2 hover:bg-slate-200 transition-colors"
@@ -535,89 +518,110 @@ export default function KrissKrossJobs() {
             </button>
 
             <div className="flex h-full w-full flex-col md:flex-row divide-x divide-slate-100 overflow-y-auto">
-              {/* Left Side: Job Info */}
-              <div className="flex-1 p-8 md:p-16">
-                <div className="inline-flex rounded-full bg-[#0040E5]/5 px-4 py-1.5 text-xs font-black uppercase text-[#0040E5] tracking-widest mb-6">Open Project</div>
-                <h2 className="text-4xl font-black text-slate-900 md:text-5xl">{selectedJob.title}</h2>
-                <p className="mt-4 text-2xl font-bold text-slate-500">{selectedJob.price}</p>
+              {/* Left Side: Project Info */}
+              <div className="flex-1 p-8 md:p-12">
+                <div className="inline-flex rounded-full bg-[#0040E5]/5 px-4 py-1.5 text-xs font-black uppercase text-[#0040E5] tracking-widest mb-6 border border-[#0040E5]/10">Project Brief</div>
+                <h2 className="text-3xl font-black text-slate-900 md:text-4xl leading-tight">{selectedJob.title}</h2>
+                <div className="mt-4 flex items-center gap-4">
+                  <span className="text-2xl font-bold text-[#0040E5]">{selectedJob.budget}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
+                  <span className="text-lg font-medium text-slate-500">{selectedJob.quantity} required</span>
+                </div>
 
                 <div className="mt-12 space-y-10">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900">Project Description</h3>
-                    <p className="mt-4 text-lg text-slate-600 leading-relaxed">{selectedJob.description || "A professional creator will generate high-quality AI assets tailored to your brand identity."}</p>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Project Overview</h3>
+                    <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+                      We're looking for an experienced AI creator to generate high-quality {selectedJob.tags?.[1] || 'content'} for our brand.
+                      The ideal candidate should have a strong portfolio in {selectedJob.tags?.[0] || 'ecommerce'} and be familiar with TikTok Shop requirements.
+                    </p>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900">Deliverables</h3>
-                    <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      {(selectedJob.deliverables || ["1x High-Res Output", "Full Commercial Rights", "2 Revisions", "Source Files Included"]).map((d: string, i: number) => (
-                        <li key={i} className="flex items-center gap-3 rounded-xl border border-slate-100 p-4 text-sm font-bold text-slate-700">
-                          <CheckCircle2 className="h-5 w-5 text-[#10B981]" />
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Requirements</h3>
+                    <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {[
+                        "High-resolution AI output",
+                        "TikTok-optimized format (9:16)",
+                        "Clean, commercial aesthetic",
+                        "Fast 48-hour turnaround",
+                        "2 rounds of revisions",
+                        "Final source file delivery"
+                      ].map((d, i) => (
+                        <li key={i} className="flex items-center gap-3 rounded-lg border border-slate-50 p-3 text-sm font-bold text-slate-700">
+                          <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
                           {d}
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                    <div className="rounded-2xl bg-slate-50 p-6">
-                      <Clock className="h-6 w-6 text-[#0040E5] mb-3" />
-                      <h4 className="font-bold text-slate-900">Turnaround Time</h4>
-                      <p className="mt-1 text-slate-500">{selectedJob.turnaround || "2-3 Days"}</p>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                    <div className="rounded-xl bg-slate-50 p-5">
+                      <Clock className="h-5 w-5 text-[#0040E5] mb-2" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Timeline</h4>
+                      <p className="mt-1 font-bold text-slate-900">48-72 Hours</p>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 p-6">
-                      <Zap className="h-6 w-6 text-[#10B981] mb-3" />
-                      <h4 className="font-bold text-slate-900">Urgent Delivery</h4>
-                      <p className="mt-1 text-slate-500">Available (+50%)</p>
+                    <div className="rounded-xl bg-slate-50 p-5">
+                      <Zap className="h-5 w-5 text-[#10B981] mb-2" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Urgency</h4>
+                      <p className="mt-1 font-bold text-slate-900">{selectedJob.tags?.includes('Urgent') ? 'High Priority' : 'Standard'}</p>
+                    </div>
+                    <div className="rounded-xl bg-slate-50 p-5">
+                      <Users className="h-5 w-5 text-[#0040E5] mb-2" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Applicants</h4>
+                      <p className="mt-1 font-bold text-slate-900">{selectedJob.applicants?.split(' ')[0] || '0'}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Side: Creator Sidebar */}
-              <div className="w-full md:w-[400px] bg-slate-50/50 p-8 md:p-12">
+              {/* Right Side: Apply Sidebar */}
+              <div className="w-full md:w-[360px] bg-slate-50/50 p-8 md:p-10">
                 <div className="sticky top-0 space-y-8">
-                  <div className="text-center">
-                    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#0040E5] text-3xl font-black text-white shadow-xl shadow-[#0040E5]/20 uppercase">
-                      {selectedJob.creator?.charAt(0) || "C"}
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <h4 className="text-xl font-bold text-slate-900">{selectedJob.creator}</h4>
-                      <CheckCircle2 className="h-5 w-5 fill-[#0040E5] text-white" />
-                    </div>
-                    <div className="mt-2 flex items-center justify-center gap-2">
-                      <div className="flex text-yellow-500">
-                        <Star className="h-4 w-4 fill-current" />
-                        <Star className="h-4 w-4 fill-current" />
-                        <Star className="h-4 w-4 fill-current" />
-                        <Star className="h-4 w-4 fill-current" />
-                        < Star className="h-4 w-4 fill-current" />
+                  <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white font-black">B</div>
+                      <div>
+                        <h4 className="font-bold text-slate-900">Vetted Brand</h4>
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xs font-bold text-slate-600">4.9/5 Rating</span>
+                        </div>
                       </div>
-                      <span className="text-sm font-bold text-slate-900">{selectedJob.rating} <span className="text-slate-400 font-medium">({selectedJob.reviews} reviews)</span></span>
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">Total Spent</span>
+                        <span className="font-bold text-slate-900">$25,000+</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">Hiring Rate</span>
+                        <span className="font-bold text-slate-900">92%</span>
+                      </div>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <button className="w-full rounded-2xl bg-[#0040E5] py-4 text-base font-bold text-white shadow-xl shadow-[#0040E5]/20 hover:bg-[#0036C2]">Hire This Creator</button>
-                    <button className="w-full rounded-2xl border-2 border-slate-200 bg-white py-4 text-base font-bold text-slate-700 hover:border-[#0040E5] hover:text-[#0040E5] transition-all">Message Creator</button>
+                    <button
+                      onClick={() => { setSelectedJob(null); setIsSignupModalOpen(true); }}
+                      className="w-full rounded-xl bg-[#0040E5] py-4 text-base font-bold text-white shadow-lg shadow-[#0040E5]/20 hover:bg-[#0036C2] transition-all active:scale-95"
+                    >
+                      Apply to Project
+                    </button>
+                    <button className="w-full rounded-xl border-2 border-slate-200 bg-white py-4 text-base font-bold text-slate-700 hover:border-[#0040E5] hover:text-[#0040E5] transition-all">
+                      Save for Later
+                    </button>
                   </div>
 
-                  <div className="space-y-6 pt-6 border-t border-slate-200">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-slate-500">Jobs completed</span>
-                      <span className="text-sm font-bold text-slate-900">{selectedJob.jobsCompleted || "150+"}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-slate-500">On-time delivery</span>
-                      <span className="text-sm font-bold text-[#10B981]">{selectedJob.onTimeDelivery || "100%"}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-slate-500">Repeat clients</span>
-                      <span className="text-sm font-bold text-slate-900">{selectedJob.repeatClients || "45%"}</span>
-                    </div>
-                    <div className="flex items-center justify-between pt-6 border-t border-slate-200">
-                      <span className="text-sm font-medium text-slate-400 uppercase tracking-widest text-[10px]">Total Platform Earnings</span>
-                      <span className="text-lg font-black text-[#10B981]">{selectedJob.totalEarnings || "$10k+"}</span>
+                  <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                    <div className="flex gap-3">
+                      <Zap className="h-5 w-5 text-[#0040E5] shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold text-blue-900">Pro Tip</p>
+                        <p className="text-[11px] text-blue-700 leading-tight mt-1">Creators with a complete portfolio are 5x more likely to be hired for this category.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -675,19 +679,19 @@ export default function KrissKrossJobs() {
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#10B981]">
                 <Sparkles className="h-8 w-8" />
               </div>
-              <h2 className="text-3xl font-black text-slate-900">Join as a Creator</h2>
-              <p className="mt-2 text-slate-500">Showcase your AI skills and start earning from TikTok Shop sellers.</p>
+              <h2 className="text-3xl font-black text-slate-900">Start Your Portfolio</h2>
+              <p className="mt-2 text-slate-500">Showcase your AI skills and start applying to projects immediately.</p>
             </div>
 
             <form className="mt-10 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Full Name</label>
-                  <input type="text" className="mt-2 w-full rounded-xl border border-slate-200 p-4 focus:ring-2 focus:ring-[#10B981]/20 focus:outline-none" />
+                  <input type="text" className="mt-2 w-full rounded-xl border border-slate-200 p-4 focus:ring-2 focus:ring-[#0040E5]/20 focus:outline-none" />
                 </div>
                 <div>
                   <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label>
-                  <input type="email" className="mt-2 w-full rounded-xl border border-slate-200 p-4 focus:ring-2 focus:ring-[#10B981]/20 focus:outline-none" />
+                  <input type="email" className="mt-2 w-full rounded-xl border border-slate-200 p-4 focus:ring-2 focus:ring-[#0040E5]/20 focus:outline-none" />
                 </div>
               </div>
               <div>
@@ -703,8 +707,8 @@ export default function KrissKrossJobs() {
                 <p className="text-sm font-bold text-slate-700">Upload 3-5 portfolio samples</p>
                 <p className="text-xs text-slate-400 mt-1">Videos or Images generated by AI</p>
               </div>
-              <button type="submit" onClick={(e) => e.preventDefault()} className="w-full rounded-2xl bg-[#10B981] py-4 text-base font-black text-white shadow-xl shadow-[#10B981]/20 hover:bg-[#059669]">Submit Application</button>
-              <p className="text-center text-[10px] text-slate-400 font-medium">We'll verify your account within 24 hours. Good luck!</p>
+              <button type="submit" onClick={(e) => e.preventDefault()} className="w-full rounded-2xl bg-[#0040E5] py-4 text-base font-black text-white shadow-xl shadow-[#0040E5]/20 hover:bg-[#0036C2]">Go Live Now</button>
+              <p className="text-center text-[10px] text-slate-400 font-medium">No approval needed. Create your profile and start applying in minutes.</p>
             </form>
           </div>
         </div>
@@ -718,12 +722,14 @@ export default function KrissKrossJobs() {
             <button onClick={() => setMobileMenuOpen(false)}><X className="h-6 w-6" /></button>
           </div>
           <div className="mt-12 space-y-8">
-            {["Browse Jobs", "How It Works", "For Sellers", "Pricing", "About Us"].map(l => (
-              <a key={l} href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">{l}</a>
-            ))}
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">Browse Projects</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">How It Works</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-bold text-[#0040E5]">For Creators</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-xl font-medium text-slate-400">For Brands</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">Pricing</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)} className="block text-2xl font-black text-slate-900">About Us</a>
             <div className="pt-8 space-y-4">
-              <button className="w-full rounded-2xl bg-[#0040E5] py-4 font-bold text-white">Post a Job</button>
-              <button className="w-full rounded-2xl border-2 border-slate-200 py-4 font-bold text-slate-700" onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }}>Become a Creator</button>
+              <button className="w-full rounded-2xl bg-[#0040E5] py-4 font-bold text-white" onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }}>Start Portfolio</button>
             </div>
           </div>
         </div>
