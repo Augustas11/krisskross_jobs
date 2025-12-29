@@ -445,7 +445,6 @@ export default function KrissKrossJobs() {
                   className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
                   placeholder="Paste your Drive or Dropbox link here..."
                 />
-                <p className="mt-2 text-[10px] text-slate-400 font-medium italic">Note: Directly uploading files requires a paid Formspree plan. Providing a link is faster and free!</p>
               </div>
               <button
                 type="submit"
