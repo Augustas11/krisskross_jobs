@@ -517,11 +517,7 @@ export default function KrissKrossJobs() {
             </div>
           </div>
           <div className="mt-20 flex flex-col items-center justify-between gap-6 border-t border-white/10 pt-12 md:flex-row">
-            <p className="text-sm font-medium">© 2025 KrissKross Jobs. Powered by BytePlus AI.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-white transition-all"><Globe className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-white transition-all"><ExternalLink className="h-5 w-5" /></a>
-            </div>
+            <p className="text-sm font-medium">© 2025 KrissKross Jobs.</p>
           </div>
         </div>
       </footer>
