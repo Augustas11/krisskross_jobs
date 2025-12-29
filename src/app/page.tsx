@@ -196,8 +196,10 @@ export default function KrissKrossJobs() {
               onClick={() => setSelectedJob(project)}
               className="group cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="flex items-start gap-2 mb-4">
-                <span className="text-xl">💼</span>
+              <div className="flex items-start gap-3 mb-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0040E5]/5 text-[#0040E5]">
+                  {project.tags.includes("Images") ? <ImageIcon className="h-5 w-5" /> : <Video className="h-5 w-5" />}
+                </div>
                 <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#0040E5] transition-colors leading-tight">
                   {project.title}
                 </h3>
@@ -225,26 +227,6 @@ export default function KrissKrossJobs() {
               </button>
             </div>
           ))}
-        </div>
-
-        {/* 5. PAGINATION */}
-        <div className="mt-20 flex items-center justify-center gap-2">
-          <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50">
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          {[1, 2, 3, 4, 10].map((num) => (
-            <button
-              key={num}
-              className={`flex h-10 w-10 items-center justify-center rounded-lg font-bold text-sm transition-all ${num === 1 ? "bg-[#0040E5] text-white shadow-lg shadow-[#0040E5]/20" : "text-slate-600 hover:bg-slate-100"
-                }`}
-            >
-              {num === 10 && <span className="mr-2 text-slate-300 font-normal">...</span>}
-              {num}
-            </button>
-          ))}
-          <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50">
-            <ChevronRight className="h-5 w-5" />
-          </button>
         </div>
       </section>
 
