@@ -202,7 +202,10 @@ export default function KrissKrossJobs() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to start generation');
+      if (!res.ok) {
+        console.error('Generation error:', data);
+        throw new Error(`Error ${res.status}: ${data.error || data.message || res.statusText}`);
+      }
 
       if (genMode === 'video' && data.task_id) {
         pollTaskStatus(data.task_id);
@@ -693,11 +696,11 @@ export default function KrissKrossJobs() {
                 "Get paid in 48 hours (Pro tier)",
                 "Direct relationships with vetted brands"
               ].map((text, i) => (
-                <div key={i} className="bg-white border border-slate-100 p-5 rounded-2xl flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <div key={i} className="bg-white border border-slate-100 p-5 rounded-2xl flex items-start text-left gap-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
                     <CheckCircle className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700">{text}</span>
+                  <span className="text-sm font-bold text-slate-700 flex-1">{text}</span>
                 </div>
               ))}
             </div>
