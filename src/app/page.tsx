@@ -287,9 +287,6 @@ export default function KrissKrossJobs() {
               <h4 className="mb-6 font-bold text-white uppercase text-xs tracking-widest">Resources</h4>
               <ul className="space-y-4 text-sm font-bold">
                 <li key="Creator Guide"><a href="/creator-guide" className="hover:text-primary transition-colors">Creator Guide</a></li>
-                <li key="Success Stories"><a href="/success-stories" className="hover:text-primary transition-colors">Success Stories</a></li>
-                <li key="Portfolio Tips"><a href="#" className="hover:text-primary transition-colors">Portfolio Tips</a></li>
-                <li key="Help Center"><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
               </ul>
             </div>
             <div>
