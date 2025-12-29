@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import {
-  Search, Video, ImageIcon, Sparkles, Download,
+  Video, ImageIcon, Sparkles, Download,
   ArrowRight, Star, Clock, Zap,
   Menu, X, CheckCircle2, ChevronLeft,
-  Users, Target, CheckCircle
+  Users, Target, CheckCircle, LayoutGrid
 } from "lucide-react";
 
 // --- Mock Data ---
@@ -54,8 +54,6 @@ const PROJECTS = [
 export default function KrissKrossJobs() {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All Projects");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -70,23 +68,12 @@ export default function KrissKrossJobs() {
             <span className="text-xl font-bold tracking-tight hidden lg:block text-brand-dark">KrissKross <span className="text-primary font-black">Jobs</span></span>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative w-full max-w-sm hidden md:block shrink-0">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search active projects..."
-              className="w-full rounded-full border border-slate-200 bg-slate-100/50 py-3 pl-12 pr-4 text-sm transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+
 
           {/* Navigation Links - Centered */}
-          <div className="hidden lg:flex flex-1 items-center justify-center gap-10 px-8">
+          <div className="hidden lg:flex flex-1 items-center justify-end gap-10 px-8">
             <a href="#browse-projects" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">Browse Projects</a>
             <a href="#how-it-works" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">How It Works</a>
-            <a href="#" className="text-sm font-bold text-primary transition-colors whitespace-nowrap border-b-2 border-primary pb-1 leading-none">For Creators</a>
           </div>
 
           {/* Right Side Buttons */}
@@ -143,42 +130,17 @@ export default function KrissKrossJobs() {
         </div>
       </section>
 
-      {/* 3. FILTER BAR */}
-      <div className="sticky top-20 z-50 border-y border-slate-200 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div className="flex flex-1 items-center gap-3 overflow-x-auto pb-1 no-scrollbar sm:pb-0">
-            {["All Projects", "TikTok Videos", "Product Images", "Lifestyle Content", "Fashion & Beauty", "Tech & Gadgets"].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`whitespace-nowrap rounded-xl px-6 py-2.5 text-sm font-bold transition-all ${activeCategory === cat
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : "text-slate-600 hover:bg-slate-100"
-                  }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          <div className="ml-8 hidden items-center gap-4 sm:flex">
-            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">Sort by:</span>
-            <button className="flex items-center gap-2 text-sm font-black text-brand-dark">
-              Newest
-              <ChevronLeft className="h-4 w-4 -rotate-90" />
-            </button>
-          </div>
-        </div>
-      </div>
+
 
       {/* 4. PROJECT LISTING GRID */}
-      <section id="browse-projects" className="mx-auto max-w-7xl px-6 py-24">
+      <section id="browse-projects" className="mx-auto max-w-7xl px-6 py-24 scroll-mt-20">
         <h2 className="text-2xl font-black mb-10 text-brand-dark">Available Projects for AI Creators</h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {PROJECTS.map((project) => (
             <div
               key={project.id}
               onClick={() => setSelectedJob(project)}
-              className="group cursor-pointer overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 transition-all hover:-translate-y-2 hover:shadow-2xl hover:border-primary/20"
+              className="group cursor-pointer overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 transition-all hover:-translate-y-2 hover:shadow-2xl hover:border-primary/20 flex flex-col h-full"
             >
               <div className="flex items-start gap-4 mb-6">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/5 text-primary">
@@ -218,9 +180,11 @@ export default function KrissKrossJobs() {
                   ))}
                 </div>
 
-                <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-black text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 group-hover:scale-[1.02]">
-                  View Project Details <ArrowRight className="h-4 w-4" />
-                </button>
+                <div className="mt-auto">
+                  <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-black text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 group-hover:scale-[1.02]">
+                    View Project Details <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -228,7 +192,7 @@ export default function KrissKrossJobs() {
       </section>
 
       {/* 5. HOW IT WORKS */}
-      <section id="how-it-works" className="bg-white py-32">
+      <section id="how-it-works" className="bg-white py-32 scroll-mt-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-20 text-center">
             <h2 className="text-4xl font-black text-brand-dark md:text-5xl">How to Get Hired</h2>
@@ -242,7 +206,7 @@ export default function KrissKrossJobs() {
                 desc: "Upload 3-5 of your best AI-generated samples. No approval process—go live immediately."
               },
               {
-                icon: <Search className="h-8 w-8 text-primary" />,
+                icon: <LayoutGrid className="h-8 w-8 text-primary" />,
                 title: "2. Browse & Apply",
                 desc: "Find projects that match your style. Apply with your portfolio in one click."
               },
@@ -265,7 +229,7 @@ export default function KrissKrossJobs() {
       </section>
 
       {/* 11. FINAL CTA */}
-      <section id="for-creators" className="py-24 bg-background relative overflow-hidden border-t border-slate-100">
+      <section className="py-24 bg-background relative overflow-hidden border-t border-slate-100">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-0"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#977DFF]/5 rounded-full blur-[100px] -z-0"></div>
 
@@ -479,8 +443,8 @@ export default function KrissKrossJobs() {
             <button onClick={() => setMobileMenuOpen(false)} className="rounded-full bg-slate-100 p-2"><X className="h-6 w-6 text-brand-dark" /></button>
           </div>
           <div className="space-y-12">
-            {["Browse Projects", "How It Works", "For Creators", "For Brands"].map((l) => (
-              <a key={l} href="#" onClick={() => setMobileMenuOpen(false)} className="block text-4xl font-black text-brand-dark hover:text-primary transition-colors">{l}</a>
+            {["Browse Projects", "How It Works"].map((l) => (
+              <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setMobileMenuOpen(false)} className="block text-4xl font-black text-brand-dark hover:text-primary transition-colors">{l}</a>
             ))}
             <div className="pt-12">
               <button onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }} className="w-full rounded-3xl bg-primary py-6 text-xl font-black text-white shadow-2xl shadow-primary/20">Become Creator</button>
