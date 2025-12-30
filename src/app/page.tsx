@@ -898,9 +898,28 @@ export default function KrissKrossJobs() {
             </div>
 
             <form
-              action="https://formspree.io/f/xpqzowon"
-              method="POST"
-              encType="multipart/form-data"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const data = Object.fromEntries(formData.entries());
+
+                // 1. Send to Supabase
+                try {
+                  await fetch('/api/apply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                  });
+                } catch (err) {
+                  console.error('Failed to sync to Supabase:', err);
+                }
+
+                // 2. Send to Formspree (standard native way)
+                const formspreeForm = e.currentTarget;
+                formspreeForm.action = "https://formspree.io/f/xpqzowon";
+                formspreeForm.method = "POST";
+                formspreeForm.submit();
+              }}
               className="mt-12 space-y-6"
             >
               <div className="grid grid-cols-2 gap-4">
