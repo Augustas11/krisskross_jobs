@@ -31,6 +31,17 @@ export async function POST(req: NextRequest) {
     try {
         const { type, prompt, refImages, userEmail } = await req.json();
 
+        // 0. Ensure user exists in creators table (due to FK constraint)
+        const emailToUse = userEmail || 'anonymous@local';
+        const { error: creatorError } = await supabaseAdmin
+            .from('creators')
+            .upsert({ email: emailToUse }, { onConflict: 'email' });
+
+        if (creatorError) {
+            console.error('Creator Upsert Error:', creatorError);
+            // We continue anyway, but it might fail the next step if FK is strict
+        }
+
         // 1. Initial Database Entry
         const { data: dbEntry, error: dbError } = await supabaseAdmin
             .from('generations')
@@ -39,14 +50,18 @@ export async function POST(req: NextRequest) {
                 prompt,
                 status: 'pending',
                 ref_images: refImages,
-                user_email: userEmail
+                user_email: emailToUse
             })
             .select()
             .single();
 
         if (dbError) {
             console.error('DB Insert Error:', dbError);
-            return NextResponse.json({ error: 'Failed to initialize generation record' }, { status: 500 });
+            return NextResponse.json({
+                error: 'Failed to initialize generation record',
+                details: dbError.message,
+                hint: dbError.hint
+            }, { status: 500 });
         }
 
         if (!dbEntry) {
