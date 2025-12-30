@@ -11,12 +11,17 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
  */
 export async function syncToInternalStorage(externalUrl: string, path: string, contentType: string) {
     try {
+        console.log(`Starting sync for ${externalUrl} to path ${path}...`);
         // 1. Fetch the file from BytePlus/CDN
         const response = await fetch(externalUrl);
-        if (!response.ok) throw new Error(`Failed to fetch external asset: ${response.statusText}`);
+        if (!response.ok) {
+            console.error(`Failed to fetch external asset: ${response.status} ${response.statusText}`);
+            throw new Error(`Failed to fetch external asset: ${response.statusText}`);
+        }
 
         const blob = await response.blob();
         const buffer = await blob.arrayBuffer();
+        console.log(`Fetched asset size: ${buffer.byteLength} bytes. Uploading to Supabase...`);
 
         // 2. Upload to private bucket 'user-generations'
         const { data, error } = await supabaseAdmin.storage
@@ -26,13 +31,17 @@ export async function syncToInternalStorage(externalUrl: string, path: string, c
                 upsert: true
             });
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase Storage Upload Error:', error);
+            throw error;
+        }
 
         // 3. Return the public/signed URL
         const { data: { publicUrl } } = supabaseAdmin.storage
             .from('user-generations')
             .getPublicUrl(path);
 
+        console.log(`Asset synced successfully. Internal URL: ${publicUrl}`);
         return publicUrl;
     } catch (error) {
         console.error('Storage Sync Error:', error);

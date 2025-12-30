@@ -126,10 +126,17 @@ export async function POST(req: NextRequest) {
 
         // 2. Successful Task Creation / Image Generation
         if (type === 'video') {
-            await supabaseAdmin.from('generations').update({
+            console.log(`Video task created: ${data.id}. Updating DB record ${dbEntry.id}...`);
+            const { error: updateError } = await supabaseAdmin.from('generations').update({
                 byteplus_task_id: data.id,
                 metadata: data
             }).eq('id', dbEntry.id);
+
+            if (updateError) {
+                console.error('Failed to update task ID in DB:', updateError);
+            } else {
+                console.log(`Successfully linked Task ID ${data.id} to DB record ${dbEntry.id}`);
+            }
         } else if (type === 'image' && data.data?.[0]?.url) {
             const externalUrl = data.data[0].url;
             // Sync to internal storage

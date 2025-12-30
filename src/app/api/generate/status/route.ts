@@ -34,26 +34,39 @@ export async function GET(req: NextRequest) {
         if (data.status === 'SUCCEEDED' && data.result?.video_url) {
             const externalUrl = data.result.video_url;
 
-            // Check if we've already synced this (idempotency)
-            const { data: existing } = await supabaseAdmin
+            // Fetch record to update
+            const { data: records, error: fetchError } = await supabaseAdmin
                 .from('generations')
                 .select('*')
-                .eq('byteplus_task_id', taskId)
-                .single();
+                .eq('byteplus_task_id', taskId);
+
+            if (fetchError) {
+                console.error('Status DB Fetch Error:', fetchError);
+            }
+
+            const existing = records && records.length > 0 ? records[0] : null;
 
             if (existing && existing.status !== 'completed') {
+                console.log(`Syncing video for task ${taskId} to internal storage...`);
                 const internalPath = `videos/${existing.id}.mp4`;
                 const internalUrl = await syncToInternalStorage(externalUrl, internalPath, 'video/mp4');
 
-                await supabaseAdmin.from('generations').update({
+                const { error: updateError } = await supabaseAdmin.from('generations').update({
                     status: 'completed',
                     external_url: externalUrl,
                     internal_url: internalUrl,
                     metadata: data
-                }).eq('byteplus_task_id', taskId);
+                }).eq('id', existing.id);
 
-                // Attach the internal URL to the response for the frontend too
-                data.result.internal_video_url = internalUrl;
+                if (updateError) {
+                    console.error('Status DB Update Error:', updateError);
+                } else {
+                    console.log(`Successfully updated status to completed for task ${taskId}`);
+                    // Attach the internal URL to the response for the frontend too
+                    data.result.internal_video_url = internalUrl;
+                }
+            } else if (!existing) {
+                console.warn(`No generation record found for task ID: ${taskId}. DB update skipped.`);
             }
         }
 
