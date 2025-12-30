@@ -17,7 +17,6 @@ import {
     UserCheck,
     Briefcase
 } from 'lucide-react';
-import { supabaseAdmin } from '@/lib/storage-sync';
 
 interface Generation {
     id: string;
@@ -53,12 +52,11 @@ export default function AdminDashboard() {
                     setTotal(data.total);
                 }
             } else {
-                const { data: apps, error } = await supabaseAdmin
-                    .from('applications')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (apps) setApplications(apps);
+                const response = await fetch('/api/admin/applications');
+                const data = await response.json();
+                if (data.applications) {
+                    setApplications(data.applications);
+                }
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
