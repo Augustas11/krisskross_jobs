@@ -60,9 +60,14 @@ export default function CommunityFeed() {
                 <p className="text-slate-500 font-medium text-xl max-w-2xl mx-auto">See what other creators are building with KrissKross AI</p>
 
                 <div className="mt-10">
-                    <button className="rounded-full bg-primary px-10 py-4 text-sm font-black text-white shadow-2xl shadow-primary/30 hover:scale-105 hover:bg-primary/90 transition-all active:scale-95">
-                        Join KrissKross Studio Community
-                    </button>
+                    <a
+                        href="https://t.me/+v-iHGWmI5f5hMzM8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block rounded-full bg-primary px-10 py-4 text-sm font-black text-white shadow-2xl shadow-primary/30 hover:scale-105 hover:bg-primary/90 transition-all active:scale-95 text-center"
+                    >
+                        Join KrissKross Creators community
+                    </a>
                 </div>
             </div>
 
