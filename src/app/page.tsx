@@ -62,6 +62,7 @@ export default function KrissKrossJobs() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [genStatus, setGenStatus] = useState<"idle" | "processing" | "completed">("idle");
   const [genResultUrl, setGenResultUrl] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState("");
 
   // Usage tracking state
   const [remainingGenerations, setRemainingGenerations] = useState({ video: 2, image: 2 });
@@ -206,7 +207,8 @@ export default function KrissKrossJobs() {
         body: JSON.stringify({
           type: genMode,
           prompt,
-          refImages: resolvedRefImages
+          refImages: resolvedRefImages,
+          userEmail: userEmail || "anonymous@local"
         })
       });
 
@@ -475,6 +477,17 @@ export default function KrissKrossJobs() {
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder={genMode === "video" ? "e.g. A cinematic close-up of a skincare bottle with water splashes..." : "e.g. A high-fashion flatlay of winter boots on marble background..."}
                     className="w-full h-32 rounded-3xl bg-white/5 border border-white/10 p-6 text-white text-lg placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all resize-none font-medium leading-relaxed"
+                  />
+                </div>
+
+                {/* Email Identification */}
+                <div className="relative">
+                  <input
+                    type="email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="Enter your email to link this to your portfolio..."
+                    className="w-full rounded-2xl bg-white/5 border border-white/10 p-4 text-white text-sm placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all font-medium"
                   />
                 </div>
 

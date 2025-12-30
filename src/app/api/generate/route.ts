@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-
+import { supabaseAdmin, syncToInternalStorage } from '@/lib/storage-sync';
 import fs from 'fs';
 import path from 'path';
+
+export const maxDuration = 60; // Allow up to 60 seconds for the initial request if needed
 
 const API_KEY = process.env.BYTEPLUS_API_KEY || '';
 
@@ -10,9 +12,6 @@ async function getBase64Image(imagePath: string | null) {
     if (!imagePath) return null;
     if (imagePath.startsWith('data:')) return imagePath;
 
-    // If it's a blob URL from frontend, it won't work server-side
-    // The frontend should have sent the base64 or the blob should be handled
-    // For local samples (/samples/...), we can read them
     if (imagePath.startsWith('/samples')) {
         try {
             const absolutePath = path.join(process.cwd(), 'public', imagePath);
@@ -25,58 +24,45 @@ async function getBase64Image(imagePath: string | null) {
         }
     }
 
-    return imagePath; // Assume it's a URL or already base64
+    return imagePath;
 }
 
 export async function POST(req: NextRequest) {
     try {
-        const { type, prompt, refImages } = await req.json();
+        const { type, prompt, refImages, userEmail } = await req.json();
 
-        // Resolve reference images to base64 if they are local samples
+        // 1. Initial Database Entry
+        const { data: dbEntry, error: dbError } = await supabaseAdmin
+            .from('generations')
+            .insert({
+                type,
+                prompt,
+                status: 'pending',
+                ref_images: refImages,
+                user_email: userEmail
+            })
+            .select()
+            .single();
+
+        if (dbError) console.error('DB Insert Error:', dbError);
+
         const resolvedImages = await Promise.all((refImages || []).map((img: string | null) => getBase64Image(img)));
-
         const baseUrl = 'https://ark.ap-southeast.bytepluses.com/api/v3';
         let url = '';
         let body: any = {};
 
         if (type === 'video') {
-            // Video generation uses /contents/generations/tasks endpoint
             url = `${baseUrl}/contents/generations/tasks`;
-
-            // Build content array with text prompt
-            const content: any[] = [
-                {
-                    type: 'text',
-                    text: prompt
-                }
-            ];
-
-            // Build the request body with first and last frame images
             body = {
                 model: 'seedance-1-5-pro-251215',
-                content: content
+                content: [{ type: 'text', text: prompt }]
             };
 
-            // Add first_frame_image (Figure 1) if available
-            if (resolvedImages.length > 0 && resolvedImages[0]) {
-                body.first_frame_image = resolvedImages[0];
-            }
-
-            // Add last_frame_image (Figure 2) if available
-            if (resolvedImages.length > 1 && resolvedImages[1]) {
-                body.last_frame_image = resolvedImages[1];
-            }
+            if (resolvedImages.length > 0 && resolvedImages[0]) body.first_frame_image = resolvedImages[0];
+            if (resolvedImages.length > 1 && resolvedImages[1]) body.last_frame_image = resolvedImages[1];
         } else {
-            // Image generation uses /images/generations endpoint
             url = `${baseUrl}/images/generations`;
-
-            // For image generation, we'll combine the prompt with a note about reference images
-            // since this endpoint uses a simple prompt-based API
-            // Force photorealistic style to avoid default anime look
             let enhancedPrompt = `Photorealistic, 8k, realistic lighting, highly detailed. ${prompt}`;
-
-            // Note: The /images/generations endpoint doesn't support reference images in the same way
-            // We're using the prompt-based approach as shown in the curl example
 
             body = {
                 model: 'seedream-4-5-251128',
@@ -88,14 +74,9 @@ export async function POST(req: NextRequest) {
                 watermark: true
             };
 
-            // Add reference images if available (Seedream supports 'image' param for i2i/blending)
             if (resolvedImages && resolvedImages.length > 0) {
                 const validImages = resolvedImages.filter((img: string | null) => img !== null);
-                if (validImages.length > 0) {
-                    // Pass valid base64 images to the 'image' parameter
-                    body.image = validImages;
-                    console.log(`Adding ${validImages.length} reference images to Seedream request`);
-                }
+                if (validImages.length > 0) body.image = validImages;
             }
         }
 
@@ -113,8 +94,28 @@ export async function POST(req: NextRequest) {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('BytePlus Error:', data);
+            if (dbEntry) await supabaseAdmin.from('generations').update({ status: 'failed', metadata: data }).eq('id', dbEntry.id);
             return NextResponse.json({ error: data.message || 'Generation failed' }, { status: response.status });
+        }
+
+        // 2. Successful Task Creation / Image Generation
+        if (type === 'video') {
+            await supabaseAdmin.from('generations').update({
+                byteplus_task_id: data.id,
+                metadata: data
+            }).eq('id', dbEntry.id);
+        } else if (type === 'image' && data.data?.[0]?.url) {
+            const externalUrl = data.data[0].url;
+            // Sync to internal storage
+            const internalPath = `images/${dbEntry.id}.png`;
+            const internalUrl = await syncToInternalStorage(externalUrl, internalPath, 'image/png');
+
+            await supabaseAdmin.from('generations').update({
+                status: 'completed',
+                external_url: externalUrl,
+                internal_url: internalUrl,
+                metadata: data
+            }).eq('id', dbEntry.id);
         }
 
         return NextResponse.json(data);
@@ -123,3 +124,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }
 }
+
