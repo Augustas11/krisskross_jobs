@@ -44,7 +44,14 @@ export async function POST(req: NextRequest) {
             .select()
             .single();
 
-        if (dbError) console.error('DB Insert Error:', dbError);
+        if (dbError) {
+            console.error('DB Insert Error:', dbError);
+            return NextResponse.json({ error: 'Failed to initialize generation record' }, { status: 500 });
+        }
+
+        if (!dbEntry) {
+            return NextResponse.json({ error: 'Failed to create generation record' }, { status: 500 });
+        }
 
         const resolvedImages = await Promise.all((refImages || []).map((img: string | null) => getBase64Image(img)));
         const baseUrl = 'https://ark.ap-southeast.bytepluses.com/api/v3';
@@ -92,6 +99,10 @@ export async function POST(req: NextRequest) {
         });
 
         const data = await response.json();
+
+        if (!data) {
+            return NextResponse.json({ error: 'Empty response from generation service' }, { status: 500 });
+        }
 
         if (!response.ok) {
             if (dbEntry) await supabaseAdmin.from('generations').update({ status: 'failed', metadata: data }).eq('id', dbEntry.id);
