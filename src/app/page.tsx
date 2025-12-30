@@ -7,6 +7,7 @@ import {
   Menu, X, CheckCircle2, ChevronLeft,
   Users, Target, CheckCircle, LayoutGrid, Loader2, Plus, ArrowLeftRight
 } from "lucide-react";
+import CommunityFeed from "@/components/CommunityFeed";
 import { canGenerate, addGeneration, getRemainingGenerations } from "@/lib/usageTracker";
 
 // --- Mock Data ---
@@ -616,7 +617,8 @@ export default function KrissKrossJobs() {
         </div>
       </section>
 
-
+      {/* COMMUNITY GENERATIONS FEED */}
+      <CommunityFeed />
 
       {/* 4. PROJECT LISTING GRID */}
       <section id="browse-projects" className="mx-auto max-w-7xl px-6 py-24 scroll-mt-20">
