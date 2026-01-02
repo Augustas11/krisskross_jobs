@@ -53,6 +53,124 @@ const PROJECTS = [
 
 // --- Components ---
 
+function ApplicationForm({ onSubmit, onClose }: { onSubmit: (data: any) => void, onClose: () => void }) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    const newErrors: Record<string, string> = {};
+
+    // Custom Validation Logic
+    if (!data.name?.toString().trim()) {
+      newErrors.name = "Full name is required";
+    }
+
+    if (!data.email?.toString().trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(data.email.toString())) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (!data.portfolio?.toString().trim()) {
+      newErrors.portfolio = "Portfolio URL is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Clear errors and submit
+    setErrors({});
+    onSubmit(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-12 space-y-6" noValidate>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Full Name</label>
+          <input
+            type="text"
+            name="name"
+            className={`mt-2 w-full rounded-xl border p-4 font-bold focus:ring-4 focus:outline-none transition-all ${errors.name
+              ? "border-red-300 focus:ring-red-100 bg-red-50/50"
+              : "border-slate-200 focus:ring-primary/10"
+              }`}
+            placeholder="Jane Doe"
+            onChange={() => {
+              if (errors.name) setErrors(prev => ({ ...prev, name: "" }));
+            }}
+          />
+          {errors.name && <p className="mt-1.5 text-xs font-bold text-red-500 animate-in slide-in-from-top-1">{errors.name}</p>}
+        </div>
+        <div>
+          <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Email</label>
+          <input
+            type="email"
+            name="email"
+            className={`mt-2 w-full rounded-xl border p-4 font-bold focus:ring-4 focus:outline-none transition-all ${errors.email
+              ? "border-red-300 focus:ring-red-100 bg-red-50/50"
+              : "border-slate-200 focus:ring-primary/10"
+              }`}
+            placeholder="jane@example.com"
+            onChange={() => {
+              if (errors.email) setErrors(prev => ({ ...prev, email: "" }));
+            }}
+          />
+          {errors.email && <p className="mt-1.5 text-xs font-bold text-red-500 animate-in slide-in-from-top-1">{errors.email}</p>}
+        </div>
+      </div>
+      <div>
+        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+          Your Portfolio URL <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          name="portfolio"
+          className={`mt-2 w-full rounded-xl border p-4 font-bold focus:ring-4 focus:outline-none transition-all ${errors.portfolio
+            ? "border-red-300 focus:ring-red-100 bg-red-50/50"
+            : "border-slate-200 focus:ring-primary/10"
+            }`}
+          placeholder="Loomly, Instagram, Behance..."
+          onChange={() => {
+            if (errors.portfolio) setErrors(prev => ({ ...prev, portfolio: "" }));
+          }}
+        />
+        {errors.portfolio && <p className="mt-1.5 text-xs font-bold text-red-500 animate-in slide-in-from-top-1">{errors.portfolio}</p>}
+      </div>
+      <div>
+        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Link to AI Samples</label>
+        <p className="mb-2 text-xs text-slate-400 font-medium">Please include examples created with KrissKross AI or other tools.</p>
+        <input
+          type="url"
+          name="samples_link"
+          className="w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
+          placeholder="Paste your Drive or Dropbox link here..."
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full rounded-2xl bg-brand-dark py-5 text-lg font-black text-white shadow-2xl hover:scale-[1.02] transition-all"
+      >
+        Submit Application
+      </button>
+      <p className="text-center text-[11px] text-slate-400 font-bold">
+        We review every application. If approved, you will receive an invite to create your profile and access the full toolset.
+      </p>
+      <div className="mt-8 text-center border-t border-slate-100 pt-6">
+        <p className="text-xs font-bold text-slate-400">Already a member?</p>
+        <a href="/login" className="text-sm font-black text-primary hover:text-brand-dark transition-colors">
+          Sign In to Creator Studio
+        </a>
+      </div>
+    </form>
+  );
+}
+
+
 export default function KrissKrossJobs() {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -899,12 +1017,9 @@ export default function KrissKrossJobs() {
               <p className="mt-4 text-slate-500 font-medium">Join an exclusive network of top-tier AI creators. Applications are reviewed manually.</p>
             </div>
 
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                const data = Object.fromEntries(formData.entries());
-
+            {/* Form with Custom Validation */}
+            <ApplicationForm
+              onSubmit={async (data) => {
                 // 1. Send to Supabase
                 try {
                   await fetch('/api/apply', {
@@ -916,94 +1031,49 @@ export default function KrissKrossJobs() {
                   console.error('Failed to sync to Supabase:', err);
                 }
 
-                // 2. Send to Formspree (standard native way)
-                const formspreeForm = e.currentTarget;
-                formspreeForm.action = "https://formspree.io/f/xpqzowon";
-                formspreeForm.method = "POST";
-                formspreeForm.submit();
+                // 2. Submit to Formspree
+                // We construct a hidden form and submit it to maintain the redirect behavior
+                const form = document.createElement('form');
+                form.action = "https://formspree.io/f/xpqzowon";
+                form.method = "POST";
+
+                Object.entries(data).forEach(([key, value]) => {
+                  const input = document.createElement('input');
+                  input.type = 'hidden';
+                  input.name = key;
+                  input.value = value as string;
+                  form.appendChild(input);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
               }}
-              className="mt-12 space-y-6"
-            >
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
-                    placeholder="Jane Doe"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
-                    placeholder="jane@example.com"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Your Portfolio URL <span className="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  name="portfolio"
-                  required
-                  className="mt-2 w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
-                  placeholder="Loomly, Instagram, Behance..."
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Link to AI Samples</label>
-                <p className="mb-2 text-xs text-slate-400 font-medium">Please include examples created with KrissKross AI or other tools.</p>
-                <input
-                  type="url"
-                  name="samples_link"
-                  className="w-full rounded-xl border border-slate-200 p-4 font-bold focus:ring-4 focus:ring-primary/10 transition-all focus:outline-none"
-                  placeholder="Paste your Drive or Dropbox link here..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full rounded-2xl bg-brand-dark py-5 text-lg font-black text-white shadow-2xl hover:scale-[1.02] transition-all"
-              >
-                Submit Application
-              </button>
-              <p className="text-center text-[11px] text-slate-400 font-bold">
-                We review every application. If approved, you will receive an invite to create your profile and access the full toolset.
-              </p>
-              <div className="mt-8 text-center border-t border-slate-100 pt-6">
-                <p className="text-xs font-bold text-slate-400">Already a member?</p>
-                <a href="/login" className="text-sm font-black text-primary hover:text-brand-dark transition-colors">
-                  Sign In to Creator Studio
-                </a>
-              </div>
-            </form>
+              onClose={() => setIsSignupModalOpen(false)}
+            />
           </div>
         </div>
       )}
 
       {/* MOBILE MENU */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[400] bg-white p-8 animate-in slide-in-from-right duration-500">
-          <div className="flex items-center justify-between mb-20">
-            <div className="flex items-center gap-2 font-black text-primary text-xl">KJ <span className="text-brand-dark">KrissKross Jobs</span></div>
-            <button onClick={() => setMobileMenuOpen(false)} className="rounded-full bg-slate-100 p-2"><X className="h-6 w-6 text-brand-dark" /></button>
-          </div>
-          <div className="space-y-12">
-            {["Browse Projects", "How It Works"].map((l) => (
-              <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setMobileMenuOpen(false)} className="block text-4xl font-black text-brand-dark hover:text-primary transition-colors">{l}</a>
-            ))}
-            <div className="pt-12">
-              <button onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }} className="w-full rounded-3xl bg-primary py-6 text-xl font-black text-white shadow-2xl shadow-primary/20">Become Creator</button>
+      {
+        mobileMenuOpen && (
+          <div className="fixed inset-0 z-[400] bg-white p-8 animate-in slide-in-from-right duration-500">
+            <div className="flex items-center justify-between mb-20">
+              <div className="flex items-center gap-2 font-black text-primary text-xl">KJ <span className="text-brand-dark">KrissKross Jobs</span></div>
+              <button onClick={() => setMobileMenuOpen(false)} className="rounded-full bg-slate-100 p-2"><X className="h-6 w-6 text-brand-dark" /></button>
+            </div>
+            <div className="space-y-12">
+              {["Browse Projects", "How It Works"].map((l) => (
+                <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setMobileMenuOpen(false)} className="block text-4xl font-black text-brand-dark hover:text-primary transition-colors">{l}</a>
+              ))}
+              <div className="pt-12">
+                <button onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }} className="w-full rounded-3xl bg-primary py-6 text-xl font-black text-white shadow-2xl shadow-primary/20">Become Creator</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-    </div>
+    </div >
   );
 }
