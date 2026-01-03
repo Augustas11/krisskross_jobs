@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import CommunityFeed from "@/components/CommunityFeed";
 import { canGenerate, addGeneration, getRemainingGenerations } from "@/lib/usageTracker";
+import { TemplateSelector } from "@/components/marketplace/TemplateSelector";
+import { Template } from "@/types";
 
 // --- Mock Data ---
 
@@ -508,6 +510,22 @@ export default function KrissKrossJobs() {
               </p>
 
               <div className="mt-10 space-y-6">
+                {/* Template Selector */}
+                <TemplateSelector onSelect={(template: Template) => {
+                  // Apply template Config
+                  if (template.config && typeof template.config === 'object') {
+                    const cfg = template.config as any;
+                    if (cfg.prompt) setPrompt(cfg.prompt);
+                    // If template specifies mode
+                    // if (cfg.mode) setGenMode(cfg.mode); 
+                    // For now force video as templates are video-focused
+                    setGenMode('video');
+
+                    // Scroll to input
+                    // window.location.href = '#ai-generator-input';
+                  }
+                }} />
+
                 {/* Tabs */}
                 <div className="flex gap-2 p-1.5 bg-white/5 rounded-2xl w-fit border border-white/10">
                   <button

@@ -31,8 +31,12 @@ export async function GET(req: NextRequest) {
         }
 
         // Logic to persist successful video generation
-        if (data.status === 'SUCCEEDED' && data.result?.video_url) {
-            const externalUrl = data.result.video_url;
+        // BytePlus returns 'succeeded' (lowercase) and 'content.video_url'
+        const isSucceeded = (data.status === 'SUCCEEDED' || data.status === 'succeeded');
+        const videoUrl = data.result?.video_url || data.content?.video_url;
+
+        if (isSucceeded && videoUrl) {
+            const externalUrl = videoUrl;
 
             // Fetch record to update
             const { data: records, error: fetchError } = await supabaseAdmin
@@ -48,6 +52,7 @@ export async function GET(req: NextRequest) {
 
             if (existing && existing.status !== 'completed') {
                 console.log(`Syncing video for task ${taskId} to internal storage...`);
+                // Use .mp4 by default for videos
                 const internalPath = `videos/${existing.id}.mp4`;
                 const internalUrl = await syncToInternalStorage(externalUrl, internalPath, 'video/mp4');
 
@@ -63,7 +68,11 @@ export async function GET(req: NextRequest) {
                 } else {
                     console.log(`Successfully updated status to completed for task ${taskId}`);
                     // Attach the internal URL to the response for the frontend too
-                    data.result.internal_video_url = internalUrl;
+                    if (data.result) {
+                        data.result.internal_video_url = internalUrl;
+                    } else if (data.content) {
+                        data.content.internal_video_url = internalUrl;
+                    }
                 }
             } else if (!existing) {
                 console.warn(`No generation record found for task ID: ${taskId}. DB update skipped.`);

@@ -16,38 +16,45 @@ interface Generation {
 export default function CommunityFeed() {
     const [generations, setGenerations] = useState<Generation[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
-    const limit = 9;
+    const limit = 12;
 
     useEffect(() => {
-        fetchGenerations();
-    }, [page]);
+        fetchGenerations(1);
+    }, []);
 
-    const fetchGenerations = async () => {
-        setLoading(true);
+    const fetchGenerations = async (pageNum: number) => {
+        if (pageNum === 1) setLoading(true);
+        else setLoadingMore(true);
+
         try {
-            const res = await fetch(`/api/generations?page=${page}&limit=${limit}`);
+            const res = await fetch(`/api/generations?page=${pageNum}&limit=${limit}`);
             const data = await res.json();
             if (res.ok) {
-                setGenerations(data.generations || []);
+                if (pageNum === 1) {
+                    setGenerations(data.generations || []);
+                } else {
+                    setGenerations(prev => [...prev, ...(data.generations || [])]);
+                }
                 setTotalPages(data.totalPages || 0);
                 setTotalCount(data.total || 0);
+                setPage(pageNum);
             }
         } catch (error) {
             console.error("Failed to fetch generations:", error);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
     };
 
-    const handlePrevPage = () => {
-        if (page > 1) setPage(page - 1);
-    };
-
-    const handleNextPage = () => {
-        if (page < totalPages) setPage(page + 1);
+    const handleLoadMore = () => {
+        if (page < totalPages) {
+            fetchGenerations(page + 1);
+        }
     };
 
     return (
@@ -86,7 +93,7 @@ export default function CommunityFeed() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                         {generations.map((gen, idx) => (
                             <div
-                                key={gen.id}
+                                key={`${gen.id}-${idx}`}
                                 className="group relative aspect-[9/16] rounded-[2.5rem] overflow-hidden bg-brand-dark shadow-xl transition-all hover:-translate-y-4 hover:shadow-2xl hover:shadow-primary/20 border border-slate-200"
                             >
                                 {/* Media Content */}
@@ -154,45 +161,18 @@ export default function CommunityFeed() {
                         ))}
                     </div>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="mt-24 flex items-center justify-center gap-4">
+                    {/* Load More Button */}
+                    {page < totalPages && (
+                        <div className="mt-20 flex justify-center">
                             <button
-                                onClick={handlePrevPage}
-                                disabled={page === 1}
-                                className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:text-slate-600 transition-all shadow-xl shadow-slate-200/50 active:scale-90"
+                                onClick={handleLoadMore}
+                                disabled={loadingMore}
+                                className="group relative overflow-hidden rounded-full bg-white border-2 border-slate-100 px-10 py-5 text-sm font-black text-slate-600 shadow-xl shadow-slate-200/50 transition-all hover:-translate-y-1 hover:border-primary hover:text-primary active:scale-95 disabled:opacity-50"
                             >
-                                <ChevronLeft className="h-6 w-6" />
-                            </button>
-
-                            <div className="flex items-center gap-2 bg-white p-2 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50">
-                                {[...Array(totalPages)].map((_, i) => {
-                                    const p = i + 1;
-                                    if (totalPages > 5 && Math.abs(p - page) > 1 && p !== 1 && p !== totalPages) {
-                                        if (Math.abs(p - page) === 2) return <span key={p} className="px-2 text-slate-300">...</span>;
-                                        return null;
-                                    }
-                                    return (
-                                        <button
-                                            key={p}
-                                            onClick={() => setPage(p)}
-                                            className={`h-12 min-w-[3rem] px-4 rounded-2xl font-black text-sm transition-all ${page === p
-                                                ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                                : "text-slate-500 hover:bg-slate-50"
-                                                }`}
-                                        >
-                                            {p}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            <button
-                                onClick={handleNextPage}
-                                disabled={page === totalPages}
-                                className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:text-slate-600 transition-all shadow-xl shadow-slate-200/50 active:scale-90"
-                            >
-                                <ChevronRight className="h-6 w-6" />
+                                <span className="relative z-10 flex items-center gap-2">
+                                    {loadingMore ? "Loading..." : "Load More Assets"}
+                                    {!loadingMore && <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />}
+                                </span>
                             </button>
                         </div>
                     )}
