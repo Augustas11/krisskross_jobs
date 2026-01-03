@@ -13,6 +13,51 @@ interface Generation {
     status: string;
 }
 
+function VideoItem({ src }: { src: string }) {
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    // We use a ref callback or logic to handle play safely
+    const handleMouseEnter = (e: React.MouseEvent<HTMLVideoElement>) => {
+        const video = e.currentTarget;
+        const playPromise = video.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                setIsPlaying(true);
+            }).catch(error => {
+                // Auto-play might be prevented
+                console.log("Play prevented:", error);
+            });
+        }
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLVideoElement>) => {
+        const video = e.currentTarget;
+        video.pause();
+        video.currentTime = 0;
+        setIsPlaying(false);
+    };
+
+    return (
+        <>
+            <video
+                src={src}
+                className="h-full w-full object-cover"
+                loop
+                muted
+                playsInline
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            />
+            <div className={`absolute inset-0 flex items-center justify-center bg-black/10 transition-all duration-500 pointer-events-none ${isPlaying ? 'opacity-0' : 'group-hover:bg-black/20'}`}>
+                <div className={`h-20 w-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all duration-500 scale-90 ${isPlaying ? 'opacity-0 scale-95' : 'opacity-0 group-hover:opacity-100 group-hover:scale-100'}`}>
+                    <Play className="h-10 w-10 text-white fill-white" />
+                </div>
+            </div>
+        </>
+    );
+}
+
 export default function CommunityFeed() {
     const [generations, setGenerations] = useState<Generation[]>([]);
     const [loading, setLoading] = useState(true);
@@ -100,23 +145,7 @@ export default function CommunityFeed() {
                                 <div className="absolute inset-0 w-full h-full bg-slate-100">
                                     {gen.type === "video" ? (
                                         <div className="relative h-full w-full">
-                                            <video
-                                                src={gen.internal_url || gen.external_url || ""}
-                                                className="h-full w-full object-cover"
-                                                loop
-                                                muted
-                                                playsInline
-                                                onMouseOver={(e) => e.currentTarget.play()}
-                                                onMouseOut={(e) => {
-                                                    e.currentTarget.pause();
-                                                    e.currentTarget.currentTime = 0;
-                                                }}
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-all duration-500">
-                                                <div className="h-20 w-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-90 group-hover:scale-100">
-                                                    <Play className="h-10 w-10 text-white fill-white" />
-                                                </div>
-                                            </div>
+                                            <VideoItem src={gen.internal_url || gen.external_url || ""} />
                                         </div>
                                     ) : (
                                         <img
