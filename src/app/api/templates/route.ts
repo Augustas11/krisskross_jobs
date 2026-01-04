@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 
         let query = supabase
             .from('templates')
-            .select('*, creator:creator_id(email)', { count: 'exact' })
+            .select('*', { count: 'exact' })
             .eq('status', 'active'); // Only active templates
 
         // Filters
@@ -50,7 +50,9 @@ export async function GET(req: NextRequest) {
         // Sorting
         switch (sort) {
             case 'popularity':
-                query = query.order('purchase_count', { ascending: false });
+                // Featured templates first, then by purchase count
+                query = query.order('is_featured', { ascending: false })
+                    .order('purchase_count', { ascending: false });
                 break;
             case 'price_asc':
                 query = query.order('price_usd', { ascending: true });
@@ -60,7 +62,9 @@ export async function GET(req: NextRequest) {
                 break;
             case 'newest':
             default:
-                query = query.order('created_at', { ascending: false });
+                // Featured templates first, then by creation date
+                query = query.order('is_featured', { ascending: false })
+                    .order('created_at', { ascending: false });
                 break;
         }
 

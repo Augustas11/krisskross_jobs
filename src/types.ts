@@ -1,3 +1,28 @@
+// Subject configuration for AI model
+export interface SubjectConfig {
+    race: 'vietnamese' | 'white' | 'asian' | 'middle_eastern' | 'black';
+    gender: 'woman' | 'man' | 'child';
+    age: 'young_adult' | 'adult' | 'child_5_10';
+    build?: 'slim' | 'curvy' | 'athletic' | 'average' | 'plus_size' | null;
+}
+
+// Scene configuration for video generation
+export interface SceneConfig {
+    environment: 'urban_street' | 'cafe' | 'park' | 'rooftop' | 'office' | 'indoor';
+    lighting: 'natural_daylight' | 'studio_lighting' | 'golden_hour';
+    style: 'fashion_photography' | 'commercial' | 'lifestyle' | 'street_style';
+    actions: ('walking' | 'posing' | 'standing' | 'sitting' | 'dancing' | 'running')[];
+}
+
+// Template configuration structure
+export interface TemplateConfig {
+    prompt: string;
+    mode?: 'video' | 'image';
+    refImages?: string[]; // URLs to reference images
+    subjectConfig?: SubjectConfig;
+    sceneConfig?: SceneConfig;
+}
+
 export interface Template {
     id: string;
     creator_id: string;
@@ -6,7 +31,7 @@ export interface Template {
     category: string;
     tags?: string[];
     price_usd: number;
-    config: Record<string, unknown>; // JSONB
+    config: TemplateConfig; // Structured JSONB configuration
     preview_video_url: string;
     thumbnail_url: string;
     status: 'draft' | 'active' | 'inactive' | 'removed';

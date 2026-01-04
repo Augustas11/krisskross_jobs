@@ -10,7 +10,9 @@ import {
 import CommunityFeed from "@/components/CommunityFeed";
 import { canGenerate, addGeneration, getRemainingGenerations } from "@/lib/usageTracker";
 import { TemplateSelector } from "@/components/marketplace/TemplateSelector";
-import { Template } from "@/types";
+import { TemplatesSection } from "@/components/marketplace/TemplatesSection";
+import { Template, TemplateConfig } from "@/types";
+import { TemplateService } from "@/lib/services/templateService";
 
 // --- Mock Data ---
 
@@ -184,6 +186,7 @@ export default function KrissKrossJobs() {
   const [genStatus, setGenStatus] = useState<"idle" | "processing" | "completed">("idle");
   const [genResultUrl, setGenResultUrl] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const [appliedTemplate, setAppliedTemplate] = useState<Template | null>(null);
 
   // Usage tracking state
   const [remainingGenerations, setRemainingGenerations] = useState({ video: 2, image: 2 });
@@ -406,6 +409,52 @@ export default function KrissKrossJobs() {
     }
   };
 
+  // --- Template Application Logic ---
+  const applyTemplate = (template: Template) => {
+    const cfg = template.config as TemplateConfig;
+
+    // Track usage
+    TemplateService.trackTemplateUse(template.id);
+
+    // Set mode
+    if (cfg.mode) {
+      setGenMode(cfg.mode);
+    } else {
+      setGenMode('video'); // Default to video
+    }
+
+    // Set prompt
+    if (cfg.prompt) {
+      if (cfg.mode === 'image') {
+        setImagePrompt(cfg.prompt);
+      } else {
+        setVideoPrompt(cfg.prompt);
+      }
+    }
+
+    // Prefill reference images
+    if (cfg.refImages && Array.isArray(cfg.refImages)) {
+      if (cfg.mode === 'image') {
+        // Image mode uses 3 reference images
+        setImageRefImages(cfg.refImages.slice(0, 3));
+      } else {
+        // Video mode uses 2 reference images (first and last frame)
+        setVideoRefImages(cfg.refImages.slice(0, 2));
+      }
+    }
+
+    // Store applied template for UI display
+    setAppliedTemplate(template);
+
+    // Scroll to AI generator
+    setTimeout(() => {
+      const element = document.getElementById('ai-generator');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
+  };
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
 
@@ -489,6 +538,13 @@ export default function KrissKrossJobs() {
         </div>
       </section>
 
+      {/* 2. POPULAR TEMPLATES SECTION */}
+      <TemplatesSection
+        onTemplateSelect={applyTemplate}
+        limit={6}
+        showFilters={false}
+      />
+
       {/* 3. AI GENERATOR (LEAD MAGNET) */}
       <section id="ai-generator" className="mx-auto max-w-7xl px-6 py-20 scroll-mt-20">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-brand-dark p-8 md:p-16 shadow-2xl">
@@ -510,8 +566,27 @@ export default function KrissKrossJobs() {
               </p>
 
               <div className="mt-10 space-y-6">
-                {/* Template Selector */}
-                <TemplateSelector onSelect={(template: Template) => {
+                {/* Applied Template Indicator */}
+                {appliedTemplate && (
+                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="text-sm font-bold text-white">Using Template: {appliedTemplate.name}</p>
+                        <p className="text-xs text-slate-400">{appliedTemplate.description}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setAppliedTemplate(null)}
+                      className="text-xs font-bold text-slate-400 hover:text-white px-3 py-1 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+
+                {/* Template Selector (now hidden, replaced by TemplatesSection) */}
+                {/* <TemplateSelector onSelect={(template: Template) => {
                   // Apply template Config
                   if (template.config && typeof template.config === 'object') {
                     const cfg = template.config as any;
