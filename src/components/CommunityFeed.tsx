@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Video, ImageIcon, ChevronLeft, ChevronRight, Play, Users } from "lucide-react";
 
 interface Generation {
@@ -15,46 +15,77 @@ interface Generation {
 
 function VideoItem({ src }: { src: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
-    // We use a ref callback or logic to handle play safely
-    const handleMouseEnter = (e: React.MouseEvent<HTMLVideoElement>) => {
-        const video = e.currentTarget;
-        const playPromise = video.play();
+    const togglePlay = (e: React.MouseEvent) => {
+        // Prevent event bubbling if needed, though here strictly strictly controlling the video
+        e.preventDefault();
 
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                setIsPlaying(true);
-            }).catch(error => {
-                // Auto-play might be prevented
-                console.log("Play prevented:", error);
-            });
+        if (videoRef.current) {
+            if (isPlaying) {
+                videoRef.current.pause();
+                setIsPlaying(false);
+            } else {
+                const playPromise = videoRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        setIsPlaying(true);
+                    }).catch((error: unknown) => {
+                        console.log("Play prevented:", error);
+                    });
+                }
+            }
         }
     };
 
-    const handleMouseLeave = (e: React.MouseEvent<HTMLVideoElement>) => {
-        const video = e.currentTarget;
-        video.pause();
-        video.currentTime = 0;
-        setIsPlaying(false);
+    const handleMouseEnter = () => {
+        if (videoRef.current && !isPlaying) {
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    setIsPlaying(true);
+                }).catch(() => {
+                    // Ignore autoplay errors on hover
+                });
+            }
+        }
     };
 
+    const handleMouseLeave = () => {
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+            setIsPlaying(false);
+        }
+    };
+
+    // Ensure we have a valid video source with a timestamp for thumbnail generation if possible
+    // Note: appending #t=0.001 forces browser to seek and render first frame
+    const videoSrc = src.includes('#') ? src : `${src}#t=0.001`;
+
     return (
-        <>
+        <div
+            className="relative h-full w-full cursor-pointer"
+            onClick={togglePlay}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <video
-                src={src}
+                ref={videoRef}
+                src={videoSrc}
                 className="h-full w-full object-cover"
                 loop
                 muted
                 playsInline
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                preload="metadata"
             />
-            <div className={`absolute inset-0 flex items-center justify-center bg-black/10 transition-all duration-500 pointer-events-none ${isPlaying ? 'opacity-0' : 'group-hover:bg-black/20'}`}>
-                <div className={`h-20 w-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all duration-500 scale-90 ${isPlaying ? 'opacity-0 scale-95' : 'opacity-0 group-hover:opacity-100 group-hover:scale-100'}`}>
+            {/* Play Button Overlay - Visible when not playing */}
+            <div className={`absolute inset-0 flex items-center justify-center bg-black/10 transition-all duration-500 pointer-events-none ${isPlaying ? 'opacity-0' : 'opacity-100 bg-black/20'}`}>
+                <div className={`h-20 w-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all duration-500 ${isPlaying ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
                     <Play className="h-10 w-10 text-white fill-white" />
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
