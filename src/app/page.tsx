@@ -474,6 +474,12 @@ export default function KrissKrossJobs() {
             <a href="#browse-projects" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">Browse Projects</a>
             <a href="#how-it-works" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">How It Works</a>
             <a
+              href="/pipeline"
+              className="group flex items-center gap-1.5 text-sm font-bold text-orange-500 transition-all whitespace-nowrap leading-none px-4 py-2 bg-orange-500/5 rounded-full border border-orange-500/10 hover:bg-orange-500 hover:text-white"
+            >
+              🔬 AI Pipeline
+            </a>
+            <a
               href="#ai-generator"
               className="group flex items-center gap-1.5 text-sm font-bold text-primary transition-all whitespace-nowrap leading-none px-4 py-2 bg-primary/5 rounded-full border border-primary/10 hover:bg-primary hover:text-white"
             >
