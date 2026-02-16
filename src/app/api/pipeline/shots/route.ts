@@ -1,13 +1,13 @@
 /**
  * Pipeline Shots API Route
- * Generates video shots via Seedance from Agent 03 output.
- * Admin-only: requires SEEDANCE_API_KEY.
+ * Generates video shots via BytePlus from Agent 03 output.
+ * Admin-only: requires BYTEPLUS_API_KEY.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import {
-    submitSeedanceJob,
-    pollSeedanceJob,
+    submitVideoJob,
+    pollVideoJob,
 } from "@/lib/pipeline/pipelineService";
 import { buildAllShotPrompts } from "@/lib/pipeline/shotPromptBuilder";
 import type { VideoComposerOutput, ProductAnalysis } from "@/types";
@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        if (!process.env.SEEDANCE_API_KEY) {
+        if (!process.env.BYTEPLUS_API_KEY) {
             return NextResponse.json(
-                { error: "SEEDANCE_API_KEY not configured" },
+                { error: "BYTEPLUS_API_KEY not configured" },
                 { status: 500 }
             );
         }
@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
         await Promise.all(
             Array.from(promptMap.entries()).map(async ([idx, { prompt, durationSecs }]) => {
                 try {
-                    const taskId = await submitSeedanceJob(prompt, durationSecs);
-                    const videoUrl = await pollSeedanceJob(taskId);
+                    const taskId = await submitVideoJob(prompt, durationSecs);
+                    const videoUrl = await pollVideoJob(taskId);
                     results[idx] = { status: "done", videoUrl, prompt };
                 } catch (err: any) {
                     results[idx] = { status: "error", error: err.message, prompt };

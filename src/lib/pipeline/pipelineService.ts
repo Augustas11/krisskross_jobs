@@ -188,41 +188,41 @@ export async function* runPipeline(
     }
 }
 
-// ─── Seedance API ─────────────────────────────────────────────────────────────
+// ─── BytePlus Video Generation API ────────────────────────────────────────────
+// Uses the same BytePlus endpoint + BYTEPLUS_API_KEY as /api/generate
 
-const SEEDANCE_API_KEY = process.env.SEEDANCE_API_KEY || "";
-const SEEDANCE_BASE = "https://seedance1-5pro.com/api";
+const BYTEPLUS_API_KEY = process.env.BYTEPLUS_API_KEY || "";
+const BYTEPLUS_BASE = "https://ark.ap-southeast.bytepluses.com/api/v3";
 
-export async function submitSeedanceJob(
+export async function submitVideoJob(
     prompt: string,
-    durationSecs: number
+    _durationSecs: number
 ): Promise<string> {
-    const res = await fetch(`${SEEDANCE_BASE}/generate`, {
+    const res = await fetch(`${BYTEPLUS_BASE}/contents/generations/tasks`, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${SEEDANCE_API_KEY}`,
             "Content-Type": "application/json",
+            Authorization: `Bearer ${BYTEPLUS_API_KEY}`,
         },
         body: JSON.stringify({
-            prompt,
-            aspect_ratio: "9:16",
-            duration: String(Math.max(3, Math.min(10, durationSecs || 4))),
-            sound: false,
+            model: "seedance-1-5-pro-251215",
+            content: [{ type: "text", text: prompt }],
         }),
     });
 
     if (!res.ok) {
-        throw new Error(`Seedance submit failed: ${res.status} ${res.statusText}`);
+        const errorText = await res.text();
+        throw new Error(`BytePlus submit failed: ${res.status} - ${errorText}`);
     }
 
     const data = await res.json();
-    if (!data?.data?.task_id) {
-        throw new Error("No task_id returned from Seedance");
+    if (!data?.id) {
+        throw new Error("No task ID returned from BytePlus");
     }
-    return data.data.task_id;
+    return data.id;
 }
 
-export async function pollSeedanceJob(
+export async function pollVideoJob(
     taskId: string,
     onProgress?: (status: string, poll: number) => void
 ): Promise<string> {
@@ -231,31 +231,39 @@ export async function pollSeedanceJob(
     for (let i = 0; i < MAX_POLLS; i++) {
         await new Promise((r) => setTimeout(r, 3000));
 
-        const res = await fetch(`${SEEDANCE_BASE}/status?task_id=${taskId}`, {
-            headers: { Authorization: `Bearer ${SEEDANCE_API_KEY}` },
-        });
+        const res = await fetch(
+            `${BYTEPLUS_BASE}/contents/generations/tasks/${taskId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${BYTEPLUS_API_KEY}`,
+                },
+            }
+        );
 
         if (!res.ok) {
-            throw new Error(`Seedance poll failed: ${res.status}`);
+            throw new Error(`BytePlus poll failed: ${res.status}`);
         }
 
         const data = await res.json();
-        const status = data?.data?.status;
+        const status = data?.status;
 
-        onProgress?.(status, i);
+        onProgress?.(status || "unknown", i);
 
-        if (status === "SUCCESS") {
-            const url = data?.data?.response?.[0];
-            if (!url) throw new Error("No video URL in Seedance response");
+        // BytePlus returns 'SUCCEEDED' or 'succeeded'
+        if (status === "SUCCEEDED" || status === "succeeded") {
+            const url = data?.result?.video_url || data?.content?.video_url;
+            if (!url) throw new Error("No video URL in BytePlus response");
             return url;
         }
 
-        if (status === "FAILED") {
+        if (status === "FAILED" || status === "failed") {
             throw new Error(
-                data?.data?.error_message || "Seedance generation failed"
+                data?.error?.message || "BytePlus video generation failed"
             );
         }
     }
 
-    throw new Error("Seedance timed out after 2 minutes");
+    throw new Error("BytePlus video generation timed out after 2 minutes");
 }

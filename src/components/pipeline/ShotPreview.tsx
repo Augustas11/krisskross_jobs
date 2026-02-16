@@ -55,13 +55,13 @@ export function ShotPreview({
             <div className="px-6 py-[18px] border-b border-slate-800/50 flex items-center justify-between">
                 <div>
                     <div className="text-[9px] text-cyan-500 font-mono tracking-[0.14em] font-bold mb-1">
-                        05 · SEEDANCE 1.5 · SHOT GENERATION
+                        05 · BYTEPLUS · SHOT GENERATION
                     </div>
                     <div className="text-[15px] font-bold tracking-tight text-slate-100">
                         Generate Video Shots
                     </div>
                     <div className="text-xs text-slate-500 mt-0.5">
-                        Each shot from Agent 03 → Seedance prompt → 9:16 video clip
+                        Each shot from Agent 03 → BytePlus prompt → 9:16 video clip
                     </div>
                 </div>
                 <div className="text-2xl">🎥</div>
@@ -227,15 +227,15 @@ export function ShotPreview({
                     }}
                 >
                     {seedanceRunning
-                        ? `⟳  Generating ${shots.length} shots via Seedance...`
+                        ? `⟳  Generating ${shots.length} shots via BytePlus...`
                         : Object.keys(shotVideos).length > 0
                             ? "↺  Regenerate All Shots"
-                            : `▶  Generate ${shots.length + (hasOpeningShot ? 1 : 0)} Shots via Seedance 1.5`}
+                            : `▶  Generate ${shots.length + (hasOpeningShot ? 1 : 0)} Shots via BytePlus`}
                 </button>
 
                 {!seedanceConfigured && (
                     <div className="mt-2.5 text-[11px] text-slate-600 text-center font-mono">
-                        SEEDANCE_API_KEY not configured in environment
+                        BYTEPLUS_API_KEY not configured in environment
                     </div>
                 )}
             </div>
