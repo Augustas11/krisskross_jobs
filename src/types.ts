@@ -1,5 +1,14 @@
+// ─── Auth Types ─────────────────────────────────────────────────────────────
+
+export type UserRole = 'job_seeker' | 'employer';
+
+export function getUserRole(publicMetadata: Record<string, unknown>): UserRole | null {
+    return (publicMetadata?.role as UserRole) ?? null;
+}
+
 // Subject configuration for AI model
 export interface SubjectConfig {
+
     race: 'vietnamese' | 'white' | 'asian' | 'middle_eastern' | 'black';
     gender: 'woman' | 'man' | 'child';
     age: 'young_adult' | 'adult' | 'child_5_10';
