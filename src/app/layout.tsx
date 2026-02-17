@@ -57,6 +57,9 @@ function Header() {
                 <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-brand-dark transition-colors">
                   Dashboard
                 </Link>
+                <Link href="/variations" className="text-sm font-bold text-slate-600 hover:text-brand-dark transition-colors">
+                  Variations
+                </Link>
                 <UserButton
                   appearance={{
                     elements: {
