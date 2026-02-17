@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   Video, ImageIcon, Sparkles, Download,
   ArrowRight, Star, Clock, Zap,
-  Menu, X, CheckCircle2, ChevronLeft,
+  X, CheckCircle2, ChevronLeft,
   Users, Target, CheckCircle, LayoutGrid, Loader2, Plus, ArrowLeftRight
 } from "lucide-react";
 import CommunityFeed from "@/components/CommunityFeed";
@@ -178,7 +178,7 @@ function ApplicationForm({ onSubmit, onClose }: { onSubmit: (data: any) => void,
 export default function KrissKrossJobs() {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
 
   // --- AI Generator State ---
   const [genMode, setGenMode] = useState<"video" | "image">("video");
@@ -458,52 +458,7 @@ export default function KrissKrossJobs() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
 
-      {/* 1. NAVIGATION BAR */}
-      <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-7xl items-center px-6">
-          {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer group mr-10 shrink-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-black text-base shadow-lg shadow-primary/20">KJ</div>
-            <span className="text-xl font-bold tracking-tight hidden lg:block text-brand-dark">KrissKross <span className="text-primary font-black">Jobs</span></span>
-          </div>
 
-
-
-          {/* Navigation Links - Centered */}
-          <div className="hidden lg:flex flex-1 items-center justify-end gap-10 px-8">
-            <a href="#browse-projects" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">Browse Projects</a>
-            <a href="#how-it-works" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors whitespace-nowrap leading-none">How It Works</a>
-            <a
-              href="/pipeline"
-              className="group flex items-center gap-1.5 text-sm font-bold text-orange-500 transition-all whitespace-nowrap leading-none px-4 py-2 bg-orange-500/5 rounded-full border border-orange-500/10 hover:bg-orange-500 hover:text-white"
-            >
-              🔬 AI Pipeline
-            </a>
-            <a
-              href="#ai-generator"
-              className="group flex items-center gap-1.5 text-sm font-bold text-primary transition-all whitespace-nowrap leading-none px-4 py-2 bg-primary/5 rounded-full border border-primary/10 hover:bg-primary hover:text-white"
-            >
-              <Sparkles className="h-3.5 w-3.5" /> Free AI Tool
-            </a>
-          </div>
-
-          {/* Right Side Buttons */}
-          <div className="flex items-center gap-6 shrink-0">
-            <a href="/login" className="hidden lg:block text-sm font-bold text-slate-500 hover:text-brand-dark transition-colors">
-              Log In
-            </a>
-            <button
-              onClick={() => setIsSignupModalOpen(true)}
-              className="rounded-full bg-primary px-8 py-3 text-sm font-black text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
-            >
-              Become Creator
-            </button>
-            <button className="lg:hidden ml-2" onClick={() => setMobileMenuOpen(false)}>
-              <Menu className="h-6 w-6 text-brand-dark" />
-            </button>
-          </div>
-        </div>
-      </nav>
 
       {/* 2. HERO SECTION */}
       <section className="mx-auto max-w-5xl px-6 py-24 text-center md:py-36">
@@ -1153,25 +1108,7 @@ export default function KrissKrossJobs() {
         </div>
       )}
 
-      {/* MOBILE MENU */}
-      {
-        mobileMenuOpen && (
-          <div className="fixed inset-0 z-[400] bg-white p-8 animate-in slide-in-from-right duration-500">
-            <div className="flex items-center justify-between mb-20">
-              <div className="flex items-center gap-2 font-black text-primary text-xl">KJ <span className="text-brand-dark">KrissKross Jobs</span></div>
-              <button onClick={() => setMobileMenuOpen(false)} className="rounded-full bg-slate-100 p-2"><X className="h-6 w-6 text-brand-dark" /></button>
-            </div>
-            <div className="space-y-12">
-              {["Browse Projects", "How It Works"].map((l) => (
-                <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setMobileMenuOpen(false)} className="block text-4xl font-black text-brand-dark hover:text-primary transition-colors">{l}</a>
-              ))}
-              <div className="pt-12">
-                <button onClick={() => { setMobileMenuOpen(false); setIsSignupModalOpen(true); }} className="w-full rounded-3xl bg-primary py-6 text-xl font-black text-white shadow-2xl shadow-primary/20">Become Creator</button>
-              </div>
-            </div>
-          </div>
-        )
-      }
+
 
     </div >
   );
