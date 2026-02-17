@@ -21,8 +21,8 @@ export default function CreatorSignupPage() {
         const data = Object.fromEntries(formData);
 
         // Add additional metadata
-        formData.append("subject", "New Creator Application - KrissKross");
-        formData.append("from_name", "KrissKross Applications");
+        formData.append("subject", "New Creator Application - KrissKross Creators");
+        formData.append("from_name", "KrissKross Creators Applications");
 
         // Fallback to Formspree if Web3Forms key is missing (using the one found in legacy code)
         // The user requested Web3Forms, but if key is missing, this won't work without it.
@@ -76,7 +76,7 @@ export default function CreatorSignupPage() {
                     </div>
                     <h2 className="text-3xl font-serif text-gray-900 mb-4">Application Received</h2>
                     <p className="text-gray-600 mb-8 leading-relaxed">
-                        Thanks for applying to KrissKross. We review every portfolio manually. You'll hear from us within 48 hours.
+                        Thanks for applying to KrissKross Creators. We review every portfolio manually. You&apos;ll hear from us within 48 hours.
                     </p>
                     <Link href="/">
                         <Button className="w-full rounded-xl">Back to Home</Button>

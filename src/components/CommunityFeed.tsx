@@ -140,7 +140,7 @@ export default function CommunityFeed() {
                     <Users className="h-4 w-4" /> Live Community Feed
                 </div>
                 <h2 className="text-4xl font-black text-brand-dark md:text-6xl mb-6 tracking-tight">Community Feed</h2>
-                <p className="text-slate-500 font-medium text-xl max-w-2xl mx-auto">See what other creators are building with KrissKross AI</p>
+                <p className="text-slate-500 font-medium text-xl max-w-2xl mx-auto">See what other creators are building with KrissKross Creators</p>
 
                 <div className="mt-10">
                     <a

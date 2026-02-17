@@ -45,10 +45,10 @@ export function Header() {
                 {/* Left: Logo */}
                 <Link href="/" className="flex items-center gap-2 group z-50 relative">
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white font-black text-sm shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-                        KJ
+                        KC
                     </div>
                     <span className="text-lg font-bold tracking-tight text-brand-dark">
-                        KrissKross <span className="text-primary font-black">Jobs</span>
+                        KrissKross <span className="text-primary font-black">Creators</span>
                     </span>
                 </Link>
 

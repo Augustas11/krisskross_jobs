@@ -1,9 +1,8 @@
 "use client";
 
 import {
-    Star, Quote, ArrowLeft, Menu, X, CheckCircle, TrendingUp
+    Star, Quote, CheckCircle, TrendingUp
 } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
 
 const STORIES = [
@@ -12,7 +11,7 @@ const STORIES = [
         role: "Lifestyle AI Videographer",
         earnings: "$4,200",
         time: "Last 30 days",
-        quote: "KrissKross bridged the gap for me. Instead of hunting for clients on Twitter, I can just focus on my Runway and Luma output. The brands here actually get what AI content is.",
+        quote: "KrissKross Creators bridged the gap for me. Instead of hunting for clients on Twitter, I can just focus on my Runway and Luma output. The brands here actually get what AI content is.",
         result: "12 high-fashion projects completed"
     },
     {
@@ -34,29 +33,9 @@ const STORIES = [
 ];
 
 export default function SuccessStories() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
         <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/90 backdrop-blur-md">
-                <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-                    <Link href="/" className="flex items-center gap-2 cursor-pointer group">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-black text-base shadow-lg shadow-primary/20">KJ</div>
-                        <span className="text-xl font-bold tracking-tight text-brand-dark">KrissKross <span className="text-primary font-black">Jobs</span></span>
-                    </Link>
-
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
-                            <ArrowLeft className="h-4 w-4" /> Back to Jobs
-                        </Link>
-                    </div>
-
-                    <button className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
-                        <Menu className="h-6 w-6 text-brand-dark" />
-                    </button>
-                </div>
-            </nav>
 
             {/* Hero */}
             <header className="py-24 px-6 text-center bg-white border-b border-slate-100">
@@ -66,7 +45,7 @@ export default function SuccessStories() {
                         Built by Creators, <br /> For <span className="text-primary">AI Artists</span>
                     </h1>
                     <p className="text-xl text-slate-500 font-medium leading-relaxed">
-                        Real people, real results. See how creators are using KrissKross Jobs to replace their 9-to-5 with AI.
+                        Real people, real results. See how creators are using KrissKross Creators to replace their 9-to-5 with AI.
                     </p>
                 </div>
             </header>
@@ -136,7 +115,7 @@ export default function SuccessStories() {
 
             {/* Footer */}
             <footer className="bg-white py-20 px-6 text-center text-slate-400 border-t border-slate-100">
-                <p className="text-sm font-bold">© 2025 KrissKross Jobs. Your story starts here.</p>
+                <p className="text-sm font-bold">© 2026 KrissKross Creators. Your story starts here.</p>
             </footer>
         </div>
     );

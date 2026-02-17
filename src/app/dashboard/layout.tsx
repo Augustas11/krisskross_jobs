@@ -3,36 +3,18 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
     LayoutGrid,
-    Briefcase,
     FileText,
-    Plus,
-    Users,
-    Heart,
+    Library,
+    Palette,
     User,
-    Building2,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-type UserRole = "job_seeker" | "employer";
-
-function getUserRole(publicMetadata: Record<string, unknown>): UserRole | null {
-    return (publicMetadata?.role as UserRole) ?? null;
-}
-
-const seekerNav = [
+const creatorNav = [
     { label: "Overview", href: "/dashboard", icon: LayoutGrid },
-    { label: "My Applications", href: "/seeker/applications", icon: FileText },
-    { label: "Saved Jobs", href: "/seeker/saved", icon: Heart },
-    { label: "My Profile", href: "/seeker/profile", icon: User },
-];
-
-const employerNav = [
-    { label: "Overview", href: "/dashboard", icon: LayoutGrid },
-    { label: "My Listings", href: "/employer/listings", icon: Briefcase },
-    { label: "Post a Job", href: "/employer/post-job", icon: Plus },
-    { label: "Applications", href: "/employer/applications", icon: Users },
-    { label: "Company", href: "/employer/company", icon: Building2 },
+    { label: "My Templates", href: "/dashboard/templates", icon: Palette },
+    { label: "My Library", href: "/dashboard/library", icon: Library },
 ];
 
 export default async function DashboardLayout({
@@ -46,13 +28,16 @@ export default async function DashboardLayout({
         redirect("/sign-in");
     }
 
-    const role = getUserRole(user.publicMetadata as Record<string, unknown>);
+    const role = (user.publicMetadata as Record<string, unknown>)?.role as string | undefined;
 
     if (!role) {
         redirect("/onboarding");
     }
 
-    const navItems = role === "employer" ? employerNav : seekerNav;
+    // Only creator role is supported
+    if (role !== "creator") {
+        redirect("/onboarding");
+    }
 
     return (
         <div className="min-h-[calc(100vh-4rem)] flex bg-slate-50/50">
@@ -61,23 +46,16 @@ export default async function DashboardLayout({
                 {/* Role Badge */}
                 <div className="mb-8">
                     <div
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-wider ${role === "employer"
-                                ? "bg-purple-50 text-purple-600"
-                                : "bg-blue-50 text-blue-600"
-                            }`}
+                        className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-wider bg-primary/10 text-primary"
                     >
-                        {role === "employer" ? (
-                            <Briefcase className="h-3 w-3" />
-                        ) : (
-                            <User className="h-3 w-3" />
-                        )}
-                        {role === "employer" ? "Employer" : "Job Seeker"}
+                        <Palette className="h-3 w-3" />
+                        Creator
                     </div>
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 space-y-1">
-                    {navItems.map((item) => (
+                    {creatorNav.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}

@@ -23,7 +23,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "KrissKross Jobs | The AI Content Marketplace",
+  title: "KrissKross Creators | The AI Content Marketplace",
   description: "Connect with expert AI creators who generate product videos and images in minutes.",
 };
 

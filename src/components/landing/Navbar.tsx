@@ -23,8 +23,7 @@ export function Navbar() {
                 <div className="flex h-20 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
-                        <span className="text-2xl font-black tracking-tight text-gray-900">KrissKross</span>
-                        <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Creator</span>
+                        <span className="text-2xl font-black tracking-tight text-gray-900">KrissKross Creators</span>
                     </Link>
 
                     {/* Desktop Nav */}

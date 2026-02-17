@@ -294,7 +294,7 @@ export function PipelineClient() {
                     </div>
                     <div>
                         <div className="text-sm font-bold tracking-tight text-slate-100">
-                            KrissKross
+                            KrissKross Creators
                         </div>
                         <div className="text-[10px] text-slate-500 tracking-[0.1em] font-mono">
                             PRODUCT → VIDEO PIPELINE

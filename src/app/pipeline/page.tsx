@@ -1,7 +1,7 @@
 import { PipelineClient } from "@/components/pipeline/PipelineClient";
 
 export const metadata = {
-    title: "Content Pipeline | KrissKross Admin",
+    title: "Content Pipeline | KrissKross Creators",
     description:
         "AI-powered product analysis → TikTok content pipeline. Upload a product image and generate scripts, compositions, and optimized metadata.",
 };

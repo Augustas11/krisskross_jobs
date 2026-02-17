@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { ProofSection } from "@/components/landing/ProofSection";
 import { OpportunitySection } from "@/components/landing/OpportunitySection";
@@ -9,10 +8,9 @@ import { FAQSection } from "@/components/landing/FAQSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
-export default function KrissKrossJobs() {
+export default function KrissKrossCreators() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-blue-100 selection:text-blue-900">
-      <Navbar />
       <Hero />
       <ProofSection />
       <OpportunitySection />

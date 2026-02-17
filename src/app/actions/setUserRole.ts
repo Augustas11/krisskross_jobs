@@ -2,7 +2,7 @@
 
 import { clerkClient, auth } from "@clerk/nextjs/server";
 
-export type UserRole = "job_seeker" | "employer";
+export type UserRole = "creator";
 
 export async function setUserRole(role: UserRole) {
     const { userId } = await auth();

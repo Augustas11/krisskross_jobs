@@ -8,8 +8,7 @@ export function Footer() {
                 {/* Brand */}
                 <div>
                     <Link href="/" className="flex items-center gap-2 mb-4">
-                        <span className="text-xl font-black tracking-tight text-white">KrissKross</span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500 bg-blue-900/20 px-2 py-0.5 rounded border border-blue-900/50">Creator</span>
+                        <span className="text-xl font-black tracking-tight text-white">KrissKross Creators</span>
                     </Link>
                     <p className="text-gray-500 text-sm max-w-xs">
                         AI-powered video tools for e-commerce creators. Turn your skills into income.
@@ -46,7 +45,7 @@ export function Footer() {
 
             <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 text-center md:text-left">
                 <p className="text-xs text-gray-600 font-medium">
-                    © 2026 KrissKross. All rights reserved.
+                    © 2026 KrissKross Creators. All rights reserved.
                 </p>
             </div>
         </footer>
