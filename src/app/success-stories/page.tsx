@@ -4,6 +4,7 @@ import {
     Star, Quote, ArrowLeft, Menu, X, CheckCircle, TrendingUp
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 const STORIES = [
     {
@@ -40,15 +41,15 @@ export default function SuccessStories() {
             {/* Navigation */}
             <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/90 backdrop-blur-md">
                 <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-                    <a href="/" className="flex items-center gap-2 cursor-pointer group">
+                    <Link href="/" className="flex items-center gap-2 cursor-pointer group">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-black text-base shadow-lg shadow-primary/20">KJ</div>
                         <span className="text-xl font-bold tracking-tight text-brand-dark">KrissKross <span className="text-primary font-black">Jobs</span></span>
-                    </a>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <a href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
+                        <Link href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
                             <ArrowLeft className="h-4 w-4" /> Back to Jobs
-                        </a>
+                        </Link>
                     </div>
 
                     <button className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
@@ -92,7 +93,7 @@ export default function SuccessStories() {
                                     ))}
                                 </div>
                                 <p className="text-slate-600 font-medium leading-relaxed italic mb-10">
-                                    "{story.quote}"
+                                    &quot;{story.quote}&quot;
                                 </p>
                             </div>
 

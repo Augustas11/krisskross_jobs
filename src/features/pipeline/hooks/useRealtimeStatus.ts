@@ -46,7 +46,8 @@ export function useRealtimeStatus(): UseRealtimeStatusReturn {
             }
             // Set final durations
             if (state.startedAt && state.completedAt) {
-                setTotalElapsed(state.completedAt - state.startedAt);
+                const finalElapsed = state.completedAt - state.startedAt;
+                setTimeout(() => setTotalElapsed(finalElapsed), 0);
             }
         }
 

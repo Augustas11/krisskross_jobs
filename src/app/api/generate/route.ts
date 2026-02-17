@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
             if (resolvedImages.length > 1 && resolvedImages[1]) body.last_frame_image = resolvedImages[1];
         } else {
             url = `${baseUrl}/images/generations`;
-            let enhancedPrompt = `Photorealistic, 8k, realistic lighting, highly detailed. ${prompt}`;
+            const enhancedPrompt = `Photorealistic, 8k, realistic lighting, highly detailed. ${prompt}`;
 
             body = {
                 model: 'seedream-4-5-251128',

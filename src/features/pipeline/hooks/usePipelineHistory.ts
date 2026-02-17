@@ -41,7 +41,6 @@ export function usePipelineHistory(): UsePipelineHistoryReturn {
     });
 
     const refresh = useCallback(() => {
-        setLoading(true);
         const result = getHistory(filters);
         setEntries(result.entries);
         setTotal(result.total);
@@ -50,7 +49,10 @@ export function usePipelineHistory(): UsePipelineHistoryReturn {
     }, [filters]);
 
     useEffect(() => {
-        refresh();
+        const timer = setTimeout(() => {
+            refresh();
+        }, 0);
+        return () => clearTimeout(timer);
     }, [refresh]);
 
     const setFilters = useCallback((partial: Partial<HistoryFilters>) => {
@@ -92,13 +94,15 @@ export function usePipelineDetail(id: string): UsePipelineDetailReturn {
     const [loading, setLoading] = useState(true);
 
     const refresh = useCallback(() => {
-        setLoading(true);
         setEntry(getHistoryById(id));
         setLoading(false);
     }, [id]);
 
     useEffect(() => {
-        refresh();
+        const timer = setTimeout(() => {
+            refresh();
+        }, 0);
+        return () => clearTimeout(timer);
     }, [refresh]);
 
     const handleUpdateTags = useCallback(

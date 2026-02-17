@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Sparkles, Play, ChevronRight, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { Template } from '@/types';
 
 interface TemplateSelectorProps {
@@ -46,9 +47,9 @@ export function TemplateSelector({ onSelect }: TemplateSelectorProps) {
                     </div>
                     <span className="text-sm font-black text-brand-dark uppercase tracking-widest">Start with a Template</span>
                 </div>
-                <a href="/marketplace" className="text-xs font-bold text-primary hover:text-brand-dark transition-colors flex items-center gap-1">
+                <Link href="/marketplace" className="text-xs font-bold text-primary hover:text-brand-dark transition-colors flex items-center gap-1">
                     View All <ChevronRight className="w-3 h-3" />
-                </a>
+                </Link>
             </div>
 
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">

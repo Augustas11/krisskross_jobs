@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@/types';
 import { TemplateService } from '@/lib/services/templateService';
 import { Sparkles, ChevronRight, Loader2, Play } from 'lucide-react';
+import Link from 'next/link';
 
 interface TemplatesSectionProps {
     onTemplateSelect: (template: Template) => void;
@@ -22,6 +23,7 @@ export function TemplatesSection({
 
     useEffect(() => {
         fetchTemplates();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeCategory, limit]);
 
     const fetchTemplates = async () => {
@@ -104,13 +106,13 @@ export function TemplatesSection({
 
             {/* View All CTA */}
             <div className="text-center mt-12">
-                <a
+                <Link
                     href="/marketplace"
                     className="inline-flex items-center gap-2 text-lg font-bold text-primary hover:text-brand-dark transition-colors"
                 >
                     Browse All Templates
                     <ChevronRight className="h-5 w-5" />
-                </a>
+                </Link>
             </div>
         </section>
     );

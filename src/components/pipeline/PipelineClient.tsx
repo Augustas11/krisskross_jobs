@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { PIPELINE_AGENTS } from "@/lib/pipeline/agents";
 import { buildAllShotPrompts } from "@/lib/pipeline/shotPromptBuilder";
 import { AgentCard } from "./AgentCard";
@@ -303,7 +304,7 @@ export function PipelineClient() {
 
                 <div className="flex items-center gap-3">
                     {/* History link */}
-                    <a
+                    <Link
                         href="/history"
                         className="text-[11px] font-mono font-bold px-3 py-1.5 rounded-lg transition-all"
                         style={{
@@ -313,7 +314,7 @@ export function PipelineClient() {
                         }}
                     >
                         📋 History
-                    </a>
+                    </Link>
 
                     {/* Status dots */}
                     <div className="flex gap-1.5 items-center bg-slate-800/50 border border-slate-700/50 rounded-md px-2.5 py-1.5">

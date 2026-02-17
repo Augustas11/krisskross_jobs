@@ -1103,7 +1103,7 @@ export default function KrissKrossJobs() {
             {(remainingGenerations.video === 0 || remainingGenerations.image === 0) && (
               <div className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-4">
                 <p className="text-sm font-bold text-primary text-center">
-                  You've used your free generations. Apply for creator access to unlock the full platform.
+                  You&apos;ve used your free generations. Apply for creator access to unlock the full platform.
                 </p>
               </div>
             )}

@@ -4,6 +4,7 @@ import {
     CheckCircle, Sparkles, BookOpen, Target, Zap, Clock, ArrowLeft, Menu, X
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function CreatorGuide() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,15 +14,15 @@ export default function CreatorGuide() {
             {/* Navigation */}
             <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/90 backdrop-blur-md">
                 <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-                    <a href="/" className="flex items-center gap-2 cursor-pointer group">
+                    <Link href="/" className="flex items-center gap-2 cursor-pointer group">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-black text-base shadow-lg shadow-primary/20">KJ</div>
                         <span className="text-xl font-bold tracking-tight text-brand-dark">KrissKross <span className="text-primary font-black">Jobs</span></span>
-                    </a>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <a href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
+                        <Link href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
                             <ArrowLeft className="h-4 w-4" /> Back to Jobs
-                        </a>
+                        </Link>
                     </div>
 
                     <button className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
@@ -50,11 +51,11 @@ export default function CreatorGuide() {
                 <section className="space-y-10">
                     <div className="flex items-center gap-4">
                         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white font-black text-xl shadow-lg shadow-primary/20">1</div>
-                        <h2 className="text-3xl font-black text-brand-dark">The "Perfect" AI Portfolio</h2>
+                        <h2 className="text-3xl font-black text-brand-dark">The &quot;Perfect&quot; AI Portfolio</h2>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-8">
                         <div className="bg-white p-8 rounded-3xl border border-slate-200">
-                            <h3 className="font-bold text-lg mb-4 text-brand-dark">Show, Don't Tell</h3>
+                            <h3 className="font-bold text-lg mb-4 text-brand-dark">Show, Don&apos;t Tell</h3>
                             <p className="text-slate-500 leading-relaxed font-medium">Brands care about realism and commercial viability. Ensure your 3-5 uploaded samples feature a variety of products (apparel, beauty, tech).</p>
                         </div>
                         <div className="bg-white p-8 rounded-3xl border border-slate-200">

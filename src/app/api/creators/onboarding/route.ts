@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         // We need 'upsert' capability or check existing.
         // Let's assume `creator_earnings` is the source of truth for stripe_account_id.
 
-        let { data: earnings } = await supabase
+        const { data: earnings } = await supabase
             .from('creator_earnings')
             .select('*')
             .eq('creator_id', user.id)

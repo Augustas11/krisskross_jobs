@@ -202,7 +202,7 @@ export default function CommunityFeed() {
                                         </span>
                                     </div>
                                     <p className="text-white text-lg font-bold line-clamp-3 leading-relaxed mb-4 italic text-slate-200">
-                                        "{gen.prompt}"
+                                        &quot;{gen.prompt}&quot;
                                     </p>
                                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest pt-4 border-t border-white/10">
                                         <span>Generated</span>
