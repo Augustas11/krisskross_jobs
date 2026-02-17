@@ -16,9 +16,10 @@ export const maxDuration = 180; // 3 min for parallel shot generation
 
 export async function POST(req: NextRequest) {
     try {
-        const { composerResult, productAnalysis } = (await req.json()) as {
+        const { composerResult, productAnalysis, productImageBase64 } = (await req.json()) as {
             composerResult: VideoComposerOutput;
             productAnalysis: ProductAnalysis | null;
+            productImageBase64?: string | null;
         };
 
         if (!composerResult?.shots?.length) {
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
         // Build all prompts
         const promptMap = buildAllShotPrompts(composerResult, productAnalysis);
 
-        // Submit + poll all shots in parallel
+        // Submit + poll all shots in parallel, passing product image as first_frame_image
         const results: Record<
             number,
             { status: string; videoUrl?: string; error?: string; prompt: string }
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
         await Promise.all(
             Array.from(promptMap.entries()).map(async ([idx, { prompt, durationSecs }]) => {
                 try {
-                    const taskId = await submitVideoJob(prompt, durationSecs);
+                    const taskId = await submitVideoJob(prompt, durationSecs, productImageBase64);
                     const videoUrl = await pollVideoJob(taskId);
                     results[idx] = { status: "done", videoUrl, prompt };
                 } catch (err: any) {

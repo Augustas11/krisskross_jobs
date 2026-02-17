@@ -23,6 +23,7 @@ interface ShotPreviewProps {
     seedanceRunning: boolean;
     seedanceConfigured: boolean;
     onGenerate: () => void;
+    productImage?: string | null;
 }
 
 export function ShotPreview({
@@ -35,6 +36,7 @@ export function ShotPreview({
     seedanceRunning,
     seedanceConfigured,
     onGenerate,
+    productImage,
 }: ShotPreviewProps) {
     const allShots: ShotData[] = hasOpeningShot
         ? [
@@ -61,10 +63,22 @@ export function ShotPreview({
                         Generate Video Shots
                     </div>
                     <div className="text-xs text-slate-500 mt-0.5">
-                        Each shot from Agent 03 → BytePlus prompt → 9:16 video clip
+                        Each shot from Agent 03 → BytePlus prompt + product image → 9:16 video clip
                     </div>
                 </div>
-                <div className="text-2xl">🎥</div>
+                <div className="flex items-center gap-3">
+                    {productImage && (
+                        <div className="flex items-center gap-2">
+                            <div className="text-[9px] text-slate-600 font-mono tracking-wider">REF</div>
+                            <img
+                                src={productImage}
+                                alt="Product reference"
+                                className="w-10 h-[50px] rounded-md object-cover border border-cyan-500/30"
+                            />
+                        </div>
+                    )}
+                    <div className="text-2xl">🎥</div>
+                </div>
             </div>
 
             {/* Shots */}

@@ -196,18 +196,28 @@ const BYTEPLUS_BASE = "https://ark.ap-southeast.bytepluses.com/api/v3";
 
 export async function submitVideoJob(
     prompt: string,
-    _durationSecs: number
+    _durationSecs: number,
+    productImageBase64?: string | null
 ): Promise<string> {
+    const bodyPayload: Record<string, any> = {
+        model: "seedance-1-5-pro-251215",
+        content: [{ type: "text", text: prompt }],
+    };
+
+    // Pass the product image as first_frame_image for image-to-video generation
+    if (productImageBase64) {
+        bodyPayload.first_frame_image = productImageBase64.startsWith("data:")
+            ? productImageBase64
+            : `data:image/jpeg;base64,${productImageBase64}`;
+    }
+
     const res = await fetch(`${BYTEPLUS_BASE}/contents/generations/tasks`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${BYTEPLUS_API_KEY}`,
         },
-        body: JSON.stringify({
-            model: "seedance-1-5-pro-251215",
-            content: [{ type: "text", text: prompt }],
-        }),
+        body: JSON.stringify(bodyPayload),
     });
 
     if (!res.ok) {

@@ -158,3 +158,59 @@ export interface PipelineResults {
     videoComposer?: VideoComposerOutput;
     tiktokMetadata?: TikTokMetadata;
 }
+
+// ─── Variation Engine Types ─────────────────────────────────────────────────
+
+export type VariationStageStatus = "idle" | "running" | "done" | "error";
+export type VariationImageStatus = "idle" | "loading" | "done" | "error";
+
+export interface VariationStates {
+    script: VariationStageStatus;
+    compose: VariationStageStatus;
+    optimize: VariationStageStatus;
+    image: VariationImageStatus;
+}
+
+export interface VariationScriptScene {
+    n: number;
+    secs: number;
+    action: string;
+    text_overlay: string;
+    image_gen_prompt: string;
+}
+
+export interface VariationScriptOutput {
+    hook: { text: string; visual_direction: string };
+    scenes: VariationScriptScene[];
+    cta: { text: string; type: string };
+    duration_secs: number;
+    angle: string;
+    music: string;
+}
+
+export interface VariationComposeOutput {
+    opening_shot?: { angle: string; model_pose: string };
+    shots: ShotComposition[];
+    color_grade: string;
+    background: string;
+    model_direction: string;
+}
+
+export interface VariationOptimizeOutput {
+    caption: { hook_sentence: string; full_caption: string };
+    hashtags: {
+        niche: string[];
+        mid: string[];
+        trending: string[];
+    };
+    sound_type: string;
+    virality_score: number;
+    ab_note: string;
+}
+
+export interface VariationResult {
+    script: VariationScriptOutput | null;
+    compose: VariationComposeOutput | null;
+    optimize: VariationOptimizeOutput | null;
+    imageUrl: string | null;
+}

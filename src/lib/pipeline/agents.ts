@@ -4,29 +4,29 @@
  */
 
 export interface PipelineAgent {
-    id: string;
-    index: number;
-    label: string;
-    name: string;
-    role: string;
-    description: string;
-    accent: string;
-    icon: string;
-    systemPrompt: string;
+  id: string;
+  index: number;
+  label: string;
+  name: string;
+  role: string;
+  description: string;
+  accent: string;
+  icon: string;
+  systemPrompt: string;
 }
 
 export const PIPELINE_AGENTS: PipelineAgent[] = [
-    {
-        id: "product_analyzer",
-        index: 0,
-        label: "01",
-        name: "Product Analyzer",
-        role: "VISION AGENT",
-        description:
-            "Reads the product image to extract category, style, target market, and key selling points",
-        accent: "#f97316",
-        icon: "🔍",
-        systemPrompt: `You are a precision product analysis agent for an AI fashion e-commerce platform. Your job is to extract structured intelligence from product photos.
+  {
+    id: "product_analyzer",
+    index: 0,
+    label: "01",
+    name: "Product Analyzer",
+    role: "VISION AGENT",
+    description:
+      "Reads the product image to extract category, style, target market, and key selling points",
+    accent: "#f97316",
+    icon: "🔍",
+    systemPrompt: `You are a precision product analysis agent for an AI fashion e-commerce platform. Your job is to extract structured intelligence from product photos.
 
 Analyze the product image and return ONLY valid JSON (no markdown, no explanation):
 {
@@ -43,18 +43,18 @@ Analyze the product image and return ONLY valid JSON (no markdown, no explanatio
   "tiktok_trend_match": "string (closest current TikTok fashion trend this matches)",
   "product_condition": "string (describe what's visible: fabric quality, fit, unique details)"
 }`,
-    },
-    {
-        id: "script_generator",
-        index: 1,
-        label: "02",
-        name: "Script Generator",
-        role: "CREATIVE AGENT",
-        description:
-            "Transforms product intelligence into a punchy TikTok-native video script with hooks and scenes",
-        accent: "#a855f7",
-        icon: "✍️",
-        systemPrompt: `You are a viral TikTok content strategist specializing in fashion e-commerce. You write scripts that stop the scroll and drive purchases.
+  },
+  {
+    id: "script_generator",
+    index: 1,
+    label: "02",
+    name: "Script Generator",
+    role: "CREATIVE AGENT",
+    description:
+      "Transforms product intelligence into a punchy TikTok-native video script with hooks and scenes",
+    accent: "#a855f7",
+    icon: "✍️",
+    systemPrompt: `You are a viral TikTok content strategist specializing in fashion e-commerce. You write scripts that stop the scroll and drive purchases.
 
 Given product analysis data, return ONLY valid JSON (no markdown, no explanation):
 {
@@ -80,44 +80,48 @@ Given product analysis data, return ONLY valid JSON (no markdown, no explanation
   "content_angle": "string (transformation/GRWM/outfit-reveal/styling-hack/POV)",
   "viral_hooks_used": ["array of psychological hooks applied"]
 }`,
-    },
-    {
-        id: "video_composer",
-        index: 2,
-        label: "03",
-        name: "Video Composer",
-        role: "DIRECTOR AGENT",
-        description:
-            "Translates the script into shot-by-shot video composition with transitions and visual effects",
-        accent: "#06b6d4",
-        icon: "🎬",
-        systemPrompt: `You are a TikTok video director for fashion content. Be concise.
+  },
+  {
+    id: "video_composer",
+    index: 2,
+    label: "03",
+    name: "Video Composer",
+    role: "DIRECTOR AGENT",
+    description:
+      "Translates the script into shot-by-shot video composition with transitions and visual effects",
+    accent: "#06b6d4",
+    icon: "🎬",
+    systemPrompt: `You are a TikTok video director for product content. The uploaded product is the HERO of every video. Be concise.
+
+CRITICAL: The uploaded product image will be used as the first frame for video generation. Every shot MUST feature the product prominently — it is not a background prop, it is the star.
+
+For each shot, specify WHERE and HOW the product appears using the "product_placement" field.
 
 Return ONLY valid JSON, no markdown:
 {
-  "opening_shot": {"angle": "string", "model_pose": "string"},
+  "opening_shot": {"angle": "string", "model_pose": "string", "product_placement": "string (where/how the product appears)"},
   "shots": [
-    {"n": 1, "type": "close-up|medium|wide", "focus": "string", "movement": "pan|zoom|static", "transition": "cut|swipe|whip-pan", "secs": 2},
-    {"n": 2, "type": "string", "focus": "string", "movement": "string", "transition": "string", "secs": 3},
-    {"n": 3, "type": "string", "focus": "string", "movement": "string", "transition": "string", "secs": 3}
+    {"n": 1, "type": "close-up|medium|wide", "focus": "string", "movement": "pan|zoom|static", "transition": "cut|swipe|whip-pan", "secs": 2, "product_placement": "string (e.g. product centered in frame, held by model, close-up of product details)"},
+    {"n": 2, "type": "string", "focus": "string", "movement": "string", "transition": "string", "secs": 3, "product_placement": "string"},
+    {"n": 3, "type": "string", "focus": "string", "movement": "string", "transition": "string", "secs": 3, "product_placement": "string"}
   ],
   "color_grade": "string",
   "background": "string",
   "model_direction": "string",
   "key_moments": ["detail1", "detail2"]
 }`,
-    },
-    {
-        id: "tiktok_optimizer",
-        index: 3,
-        label: "04",
-        name: "TikTok Optimizer",
-        role: "GROWTH AGENT",
-        description:
-            "Maximizes discoverability with optimized metadata, hashtags, posting strategy, and trending audio",
-        accent: "#10b981",
-        icon: "📈",
-        systemPrompt: `You are a TikTok algorithm specialist and growth hacker for fashion e-commerce. You know what gets pushed by the FYP algorithm.
+  },
+  {
+    id: "tiktok_optimizer",
+    index: 3,
+    label: "04",
+    name: "TikTok Optimizer",
+    role: "GROWTH AGENT",
+    description:
+      "Maximizes discoverability with optimized metadata, hashtags, posting strategy, and trending audio",
+    accent: "#10b981",
+    icon: "📈",
+    systemPrompt: `You are a TikTok algorithm specialist and growth hacker for fashion e-commerce. You know what gets pushed by the FYP algorithm.
 
 Given all previous agent outputs (product, script, composition), return ONLY valid JSON (no markdown, no explanation):
 {
@@ -150,5 +154,5 @@ Given all previous agent outputs (product, script, composition), return ONLY val
   "predicted_audience": "string",
   "virality_score": 8
 }`,
-    },
+  },
 ];

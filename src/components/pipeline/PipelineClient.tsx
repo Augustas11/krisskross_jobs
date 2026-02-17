@@ -1,10 +1,16 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { PIPELINE_AGENTS } from "@/lib/pipeline/agents";
 import { buildAllShotPrompts } from "@/lib/pipeline/shotPromptBuilder";
 import { AgentCard } from "./AgentCard";
 import { ShotPreview } from "./ShotPreview";
+import {
+    createHistoryEntry,
+    updateAgentStatus,
+    updateHistoryStatus,
+} from "@/features/pipeline/services/historyService";
+import { createThumbnail } from "@/features/pipeline/services/imageService";
 import type {
     AgentStatusType,
     VideoComposerOutput,
@@ -27,6 +33,10 @@ export function PipelineClient() {
     const [agentResults, setAgentResults] = useState<Record<number, any>>({});
     const [agentErrors, setAgentErrors] = useState<Record<number, string>>({});
     const [running, setRunning] = useState(false);
+
+    // History tracking
+    const historyIdRef = useRef<string | null>(null);
+    const pipelineStartRef = useRef<number | null>(null);
 
     // Phase 5: Seedance state
     const [shotStates, setShotStates] = useState<Record<number, string>>({});
@@ -80,6 +90,20 @@ export function PipelineClient() {
         setAgentStates({ 0: "idle", 1: "idle", 2: "idle", 3: "idle" });
         setAgentResults({});
         setAgentErrors({});
+        pipelineStartRef.current = Date.now();
+
+        // Create history entry
+        try {
+            const thumb = image ? await createThumbnail(image) : "";
+            const entry = createHistoryEntry({
+                imageUrl: image || `data:image/jpeg;base64,${imageBase64}`,
+                thumbnailUrl: thumb,
+                fileName: "product.jpg",
+            });
+            historyIdRef.current = entry.id;
+        } catch (e) {
+            console.warn("Failed to create history entry:", e);
+        }
 
         try {
             const response = await fetch("/api/pipeline/run", {
@@ -117,6 +141,16 @@ export function PipelineClient() {
                         const data = JSON.parse(line.slice(6));
 
                         if (data.type === "complete") {
+                            // Persist completion to history
+                            if (historyIdRef.current) {
+                                const totalMs = pipelineStartRef.current
+                                    ? Date.now() - pipelineStartRef.current
+                                    : null;
+                                updateHistoryStatus(historyIdRef.current, "complete", {
+                                    totalDurationMs: totalMs,
+                                    apiCostEstimate: 0.075, // ~$0.03 vision + 3×$0.015
+                                });
+                            }
                             break;
                         }
 
@@ -130,6 +164,12 @@ export function PipelineClient() {
                                     ...s,
                                     [data.agentIndex]: "running",
                                 }));
+                                if (historyIdRef.current) {
+                                    updateAgentStatus(historyIdRef.current, data.agentIndex, {
+                                        status: "running",
+                                        startedAt: new Date().toISOString(),
+                                    });
+                                }
                             } else if (data.status === "done") {
                                 setAgentStates((s) => ({
                                     ...s,
@@ -139,6 +179,13 @@ export function PipelineClient() {
                                     ...r,
                                     [data.agentIndex]: data.result,
                                 }));
+                                if (historyIdRef.current) {
+                                    updateAgentStatus(historyIdRef.current, data.agentIndex, {
+                                        status: "complete",
+                                        result: data.result,
+                                        completedAt: new Date().toISOString(),
+                                    });
+                                }
                             } else if (data.status === "error") {
                                 setAgentStates((s) => ({
                                     ...s,
@@ -148,6 +195,14 @@ export function PipelineClient() {
                                     ...e,
                                     [data.agentIndex]: data.error,
                                 }));
+                                if (historyIdRef.current) {
+                                    updateAgentStatus(historyIdRef.current, data.agentIndex, {
+                                        status: "error",
+                                        error: data.error,
+                                        completedAt: new Date().toISOString(),
+                                    });
+                                    updateHistoryStatus(historyIdRef.current, "failed");
+                                }
                             }
                         }
                     } catch {
@@ -191,7 +246,7 @@ export function PipelineClient() {
             const response = await fetch("/api/pipeline/shots", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ composerResult, productAnalysis }),
+                body: JSON.stringify({ composerResult, productAnalysis, productImageBase64: imageBase64 }),
             });
 
             const data = await response.json();
@@ -246,31 +301,50 @@ export function PipelineClient() {
                     </div>
                 </div>
 
-                {/* Status dots */}
-                <div className="flex gap-1.5 items-center bg-slate-800/50 border border-slate-700/50 rounded-md px-2.5 py-1.5">
-                    {[0, 1, 2, 3].map((i) => (
-                        <div
-                            key={i}
-                            className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                            style={{
-                                background:
-                                    agentStates[i] === "done"
-                                        ? "#10b981"
-                                        : agentStates[i] === "running"
-                                            ? PIPELINE_AGENTS[i].accent
-                                            : agentStates[i] === "error"
-                                                ? "#ef4444"
-                                                : "#1e293b",
-                                boxShadow:
-                                    agentStates[i] === "running"
-                                        ? `0 0 6px ${PIPELINE_AGENTS[i].accent}`
-                                        : "none",
-                            }}
-                        />
-                    ))}
-                    <span className="text-[10px] text-slate-600 font-mono ml-1">
-                        {allDone ? "COMPLETE" : anyRunning ? "RUNNING" : "READY"}
-                    </span>
+                <div className="flex items-center gap-3">
+                    {/* History link */}
+                    <a
+                        href="/history"
+                        className="text-[11px] font-mono font-bold px-3 py-1.5 rounded-lg transition-all"
+                        style={{
+                            color: "#94a3b8",
+                            background: "#0f172a",
+                            border: "1px solid #1e293b",
+                        }}
+                    >
+                        📋 History
+                    </a>
+
+                    {/* Status dots */}
+                    <div className="flex gap-1.5 items-center bg-slate-800/50 border border-slate-700/50 rounded-md px-2.5 py-1.5">
+                        {[0, 1, 2, 3].map((i) => (
+                            <div
+                                key={i}
+                                className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                style={{
+                                    background:
+                                        agentStates[i] === "done"
+                                            ? "#10b981"
+                                            : agentStates[i] === "running"
+                                                ? PIPELINE_AGENTS[i].accent
+                                                : agentStates[i] === "error"
+                                                    ? "#ef4444"
+                                                    : "#1e293b",
+                                    boxShadow:
+                                        agentStates[i] === "running"
+                                            ? `0 0 6px ${PIPELINE_AGENTS[i].accent}`
+                                            : "none",
+                                    animation:
+                                        agentStates[i] === "running"
+                                            ? "pulse-dot 1.5s ease-in-out infinite"
+                                            : "none",
+                                }}
+                            />
+                        ))}
+                        <span className="text-[10px] text-slate-600 font-mono ml-1">
+                            {allDone ? "COMPLETE" : anyRunning ? "RUNNING" : "READY"}
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -488,6 +562,7 @@ export function PipelineClient() {
                         seedanceRunning={seedanceRunning}
                         seedanceConfigured={true} // Server handles the key
                         onGenerate={generateShots}
+                        productImage={image}
                     />
                 )}
             </div>

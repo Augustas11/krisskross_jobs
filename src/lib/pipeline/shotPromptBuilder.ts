@@ -36,6 +36,22 @@ export function buildShotPrompt(
 ): string {
     const parts: string[] = [];
 
+    // Product hero instruction (most important — goes first)
+    if (productAnalysis) {
+        const productDesc = [
+            productAnalysis.category,
+            productAnalysis.sub_category,
+        ].filter(Boolean).join(" - ");
+        parts.push(
+            `Feature the product from the reference image (${productDesc}) as the hero element, clearly visible and recognizable`
+        );
+        if (productAnalysis.key_selling_points?.length) {
+            parts.push(
+                `highlighting: ${productAnalysis.key_selling_points.slice(0, 2).join(", ")}`
+            );
+        }
+    }
+
     // Shot type + focus
     parts.push(TYPE_MAP[shot.type || ""] || `${shot.type || "medium"} shot`);
     if (shot.focus) parts.push(`focusing on ${shot.focus}`);
@@ -53,7 +69,7 @@ export function buildShotPrompt(
     if (composerResult.color_grade)
         parts.push(`color grade: ${composerResult.color_grade}`);
 
-    // Product context from analyzer
+    // Product style context
     if (productAnalysis?.style_aesthetic)
         parts.push(`${productAnalysis.style_aesthetic} aesthetic`);
     if (productAnalysis?.primary_colors?.length)
@@ -63,7 +79,7 @@ export function buildShotPrompt(
 
     // TikTok vertical framing
     parts.push(
-        "vertical 9:16 framing, TikTok fashion video, cinematic quality"
+        "vertical 9:16 framing, TikTok product video, cinematic quality, product must be prominently visible"
     );
 
     return parts.join(", ");
