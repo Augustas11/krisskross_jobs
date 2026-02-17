@@ -1,8 +1,9 @@
 "use client";
 
 import {
-    Star, Quote, CheckCircle, TrendingUp
+    Star, Quote, ArrowLeft, Menu, X, CheckCircle, TrendingUp
 } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 
 const STORIES = [
@@ -33,9 +34,28 @@ const STORIES = [
 ];
 
 export default function SuccessStories() {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
         <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
+            {/* Navigation */}
+            <nav className="sticky top-0 z-[100] border-b border-slate-200 bg-white/90 backdrop-blur-md">
+                <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+                    <Link href="/" className="flex items-center gap-2 cursor-pointer group">
+                        <span className="text-xl font-black tracking-tight text-brand-dark">KrissKross Creators</span>
+                    </Link>
+
+                    <div className="hidden md:flex items-center gap-8">
+                        <Link href="/" className="text-sm font-bold text-slate-600 hover:text-primary flex items-center gap-2 transition-colors">
+                            <ArrowLeft className="h-4 w-4" /> Back Home
+                        </Link>
+                    </div>
+
+                    <button className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
+                        <Menu className="h-6 w-6 text-brand-dark" />
+                    </button>
+                </div>
+            </nav>
 
             {/* Hero */}
             <header className="py-24 px-6 text-center bg-white border-b border-slate-100">
