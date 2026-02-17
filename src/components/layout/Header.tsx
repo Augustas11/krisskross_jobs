@@ -38,7 +38,7 @@ export function Header() {
         { label: "For Brands", href: "/brands", isHash: false },     // Placeholder route
     ];
 
-    if (isHome) {
+    if (isHome || pathname.startsWith("/dashboard")) {
         return null;
     }
 

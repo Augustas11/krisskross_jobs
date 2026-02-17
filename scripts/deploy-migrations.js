@@ -18,7 +18,8 @@ const client = new Client({
 
 const MIGRATIONS = [
     'supabase/migrations/20260103_init_marketplace.sql',
-    'supabase/migrations/20260103_add_stats_rpc.sql'
+    'supabase/migrations/20260103_add_stats_rpc.sql',
+    'supabase/migrations/20260217_dashboard_v2_schema.sql'
 ];
 
 async function deploy() {

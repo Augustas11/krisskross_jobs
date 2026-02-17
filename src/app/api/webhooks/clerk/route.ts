@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { Webhook } from "svix";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 
 // Init Supabase Admin Client
@@ -69,33 +69,55 @@ export async function POST(req: Request) {
 
             console.log(`[Clerk Webhook] User created by webhook: ${id} (${primaryEmail})`);
 
+            let tiktokData: any = {};
+
+            if (tiktokAccount) {
+                try {
+                    const client = await clerkClient();
+                    const tokens = await client.users.getUserOauthAccessToken(id, "oauth_tiktok");
+
+                    // We typically get the latest token
+                    const tokenData = tokens.data.length > 0 ? tokens.data[0] : null;
+
+                    if (tokenData) {
+                        tiktokData = {
+                            tiktok_connected: true,
+                            tiktok_username: tiktokAccount.username || null,
+                            tiktok_display_name: tiktokAccount.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null,
+                            tiktok_avatar_url: (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null,
+                            tiktok_external_account_id: tiktokAccount.id || null,
+                            tiktok_access_token: tokenData.token,
+                            // Verify if scopes or refresh are returned. Often Clerk provides them if configured.
+                            // If scopes/refresh aren't here, we might need to rely on re-auth or different provider config.
+                            // Assuming basic access token for now.
+                        };
+                        console.log(`[Clerk Webhook] Retrieved TikTok token for ${id}`);
+                    }
+                } catch (tokenErr) {
+                    console.error("[Clerk Webhook] Error fetching TikTok token:", tokenErr);
+                    // Fallback to basic data without token
+                    tiktokData = {
+                        tiktok_connected: true,
+                        tiktok_username: tiktokAccount.username || null,
+                        tiktok_display_name: tiktokAccount.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null,
+                        tiktok_avatar_url: (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null,
+                        tiktok_external_account_id: tiktokAccount.id || null,
+                    };
+                }
+            }
+
             const { error } = await supabase.from("creator_profiles").insert({
                 clerk_user_id: id,
                 email: primaryEmail,
                 full_name: `${first_name || ""} ${last_name || ""}`.trim() || "Creator",
                 avatar_url: image_url,
-                tiktok_connected: !!tiktokAccount,
-                tiktok_username: tiktokAccount?.username || null,
-                tiktok_display_name: tiktokAccount?.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null,
-                tiktok_avatar_url: (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null,
-                tiktok_external_account_id: tiktokAccount?.id || null,
-                status: "active", // Default to active for now? Or pending? Prompt said 'pending' in schema but 'active' implies immediate access.
+                status: "active",
+                ...tiktokData
             });
 
             if (error) {
                 console.error("[Clerk Webhook] Error creating profile:", error);
                 return new Response(`Error creating profile: ${error.message}`, { status: 500 });
-            }
-
-            // Trigger enrichment if TikTok connected
-            if (tiktokAccount) {
-                // Call Edge Function for enrichment (fire and forget)
-                // TODO: Implementation of invocation
-                /*
-                await supabase.functions.invoke('enrich-creator-tiktok', {
-                   body: { clerk_user_id: id, tiktok_username: tiktokAccount.username }
-                })
-                */
             }
 
             break;
@@ -120,9 +142,28 @@ export async function POST(req: Request) {
             };
 
             if (tiktokAccount) {
-                updateData.tiktok_connected = true;
-                updateData.tiktok_username = tiktokAccount.username;
-                updateData.tiktok_external_account_id = tiktokAccount.id;
+                try {
+                    const client = await clerkClient();
+                    const tokens = await client.users.getUserOauthAccessToken(id, "oauth_tiktok");
+                    const tokenData = tokens.data.length > 0 ? tokens.data[0] : null;
+
+                    updateData.tiktok_connected = true;
+                    updateData.tiktok_username = tiktokAccount.username;
+                    updateData.tiktok_external_account_id = tiktokAccount.id;
+                    updateData.tiktok_display_name = tiktokAccount.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null;
+                    updateData.tiktok_avatar_url = (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null;
+
+                    if (tokenData) {
+                        updateData.tiktok_access_token = tokenData.token;
+                        console.log(`[Clerk Webhook] Updated TikTok token for ${id}`);
+                    }
+                } catch (tokenErr) {
+                    console.error("[Clerk Webhook] Error fetching TikTok token on update:", tokenErr);
+                    // Still update profile metadata even if token fetch fails
+                    updateData.tiktok_connected = true;
+                    updateData.tiktok_username = tiktokAccount.username;
+                    updateData.tiktok_external_account_id = tiktokAccount.id;
+                }
             }
 
             const { error } = await supabase

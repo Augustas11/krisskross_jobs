@@ -12,15 +12,13 @@ export default async function DashboardPage() {
         redirect("/sign-in");
     }
 
-    const firstName = user.firstName || "there";
-
-    // Creator View (Fetch Data)
+    // Connect to Supabase with Admin rights for profile check
     const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Fetch Profile
+    // Fetch Profile with new fields
     const { data: profile } = await supabase
         .from("creator_profiles")
         .select("*")
@@ -39,30 +37,16 @@ export default async function DashboardPage() {
         videos = data || [];
     }
 
-    return (
-        <div>
-            {/* Welcome Header */}
-            <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-black text-brand-dark mb-1">
-                        Creator Dashboard
-                    </h1>
-                    <p className="text-slate-500 font-medium">
-                        Welcome back, {firstName}. Here are your latest insights.
-                    </p>
-                </div>
-                {!profile?.tiktok_connected && (
-                    <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
-                        <span>⚠️ TikTok not connected</span>
-                    </div>
-                )}
-            </div>
+    // Determine loading/syncing state
+    // If profile is missing or recently created but tiktok sync hasn't Finished
+    const isSyncing = profile?.tiktok_connected && !profile.tiktok_username;
 
-            <CreatorDashboard
-                user={user}
-                profile={profile}
-                videos={videos}
-            />
-        </div>
+    return (
+        <CreatorDashboard
+            user={user}
+            profile={profile}
+            videos={videos}
+            isLoading={isSyncing}
+        />
     );
 }
