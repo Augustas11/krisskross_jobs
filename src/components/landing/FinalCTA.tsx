@@ -2,6 +2,8 @@
 
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
 
 export function FinalCTA() {
     return (
@@ -14,14 +16,28 @@ export function FinalCTA() {
                     Join KrissKross as a creator. Get free credits, access to Studio tools, and start earning from your first project.
                 </p>
 
-                <Button
-                    onClick={() => window.location.href = "/creator/signup"}
-                    size="xl"
-                    variant="white"
-                    className="w-full sm:w-auto px-12 py-5 text-xl rounded-full shadow-2xl hover:scale-105 transition-transform"
-                >
-                    Apply as Creator
-                </Button>
+                <SignedOut>
+                    <SignUpButton mode="modal">
+                        <Button
+                            size="xl"
+                            variant="white"
+                            className="w-full sm:w-auto px-12 py-5 text-xl rounded-full shadow-2xl hover:scale-105 transition-transform"
+                        >
+                            Apply as Creator
+                        </Button>
+                    </SignUpButton>
+                </SignedOut>
+                <SignedIn>
+                    <Link href="/dashboard" className="w-full sm:w-auto">
+                        <Button
+                            size="xl"
+                            variant="white"
+                            className="w-full sm:w-auto px-12 py-5 text-xl rounded-full shadow-2xl hover:scale-105 transition-transform"
+                        >
+                            Go to Dashboard
+                        </Button>
+                    </Link>
+                </SignedIn>
 
                 <div className="mt-10 flex flex-wrap justify-center gap-6 text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">
                     <span>Free credits included</span>

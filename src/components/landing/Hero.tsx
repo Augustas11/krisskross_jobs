@@ -2,20 +2,16 @@
 
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, Globe, TrendingUp, Wallet } from "lucide-react";
+import { SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
 
 export function Hero() {
-    const scrollToSignup = () => {
-        window.location.href = "/creator/signup";
-    };
-
     const scrollToHowItWorks = () => {
         document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
         <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-gradient-to-b from-[#FAFAF9] to-white">
-            {/* Texture Overlay (Optional, using CSS pattern if needed, but keeping simple for now) */}
-
             <div className="mx-auto max-w-5xl px-6 text-center relative z-10">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#1d4ed8] text-[10px] font-bold uppercase tracking-widest mb-8 animate-fade-in-up">
                     <span className="w-2 h-2 rounded-full bg-[#1d4ed8] animate-pulse"></span>
@@ -33,9 +29,21 @@ export function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                    <Button onClick={scrollToSignup} size="xl" className="w-full sm:w-auto rounded-full shadow-blue-900/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
-                        Start Earning Today
-                    </Button>
+                    <SignedOut>
+                        <SignUpButton mode="modal">
+                            <Button size="xl" className="w-full sm:w-auto rounded-full shadow-blue-900/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                                Start Earning Today
+                            </Button>
+                        </SignUpButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <Link href="/dashboard" className="w-full sm:w-auto">
+                            <Button size="xl" className="w-full sm:w-auto rounded-full shadow-blue-900/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                                Go to Dashboard
+                            </Button>
+                        </Link>
+                    </SignedIn>
+
                     <Button onClick={scrollToHowItWorks} variant="outline" size="xl" className="w-full sm:w-auto rounded-full bg-white hover:bg-gray-50 border-gray-200">
                         See How It Works
                     </Button>

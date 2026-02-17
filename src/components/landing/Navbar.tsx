@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -41,16 +42,30 @@ export function Navbar() {
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-4">
-                        <a href="https://studio.krisskross.ai" className="text-sm font-bold text-gray-600 hover:text-blue-600 transition-colors">
-                            Sign In
-                        </a>
-                        <Button
-                            onClick={() => window.location.href = "/creator/signup"}
-                            className="rounded-full shadow-none"
-                            size="sm"
-                        >
-                            Apply as Creator
-                        </Button>
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <button className="text-sm font-bold text-gray-600 hover:text-primary transition-colors cursor-pointer">
+                                    Sign In
+                                </button>
+                            </SignInButton>
+                            <SignUpButton mode="modal">
+                                <Button className="rounded-full shadow-none" size="sm">
+                                    Apply as Creator
+                                </Button>
+                            </SignUpButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <Link href="/dashboard" className="text-sm font-bold text-gray-600 hover:text-primary transition-colors">
+                                Dashboard
+                            </Link>
+                            <UserButton
+                                appearance={{
+                                    elements: {
+                                        avatarBox: "h-9 w-9",
+                                    },
+                                }}
+                            />
+                        </SignedIn>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -76,12 +91,32 @@ export function Navbar() {
                     </button>
                     <hr className="border-gray-100" />
                     <div className="pt-2 flex flex-col gap-3">
-                        <a href="https://studio.krisskross.ai" className="block w-full text-center py-2 font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50">
-                            Sign In
-                        </a>
-                        <Button onClick={() => window.location.href = "/creator/signup"} className="w-full rounded-xl">
-                            Apply as Creator
-                        </Button>
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <button className="w-full text-center py-3 font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer">
+                                    Sign In
+                                </button>
+                            </SignInButton>
+                            <SignUpButton mode="modal">
+                                <Button className="w-full rounded-xl py-6 text-lg">
+                                    Apply as Creator
+                                </Button>
+                            </SignUpButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                                    <UserButton showName />
+                                </div>
+                                <Link
+                                    href="/dashboard"
+                                    onClick={() => setIsOpen(false)}
+                                    className="w-full rounded-xl bg-primary py-3 text-lg font-bold text-white text-center shadow-lg"
+                                >
+                                    Go to Dashboard
+                                </Link>
+                            </div>
+                        </SignedIn>
                     </div>
                 </div>
             )}
