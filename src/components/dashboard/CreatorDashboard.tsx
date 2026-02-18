@@ -31,6 +31,8 @@ interface CreatorVideo {
     hook_effectiveness_score?: number;
 }
 
+import { OnboardingChecklist } from "./OnboardingChecklist";
+
 export default function CreatorDashboard({
     user,
     profile,
@@ -46,6 +48,8 @@ export default function CreatorDashboard({
         return <DashboardLoadingState />;
     }
 
+    const showChecklist = !profile.onboarded;
+
     return (
         <div className="max-w-7xl mx-auto space-y-12 pb-24">
             {/* 1. Welcome & Identity */}
@@ -54,13 +58,26 @@ export default function CreatorDashboard({
             {/* 2. Primary CTA: Start Earning */}
             <QuickActions />
 
-            {/* 3. AI Tools Hub */}
+            {/* 3. Onboarding Checklist (Priority if new) */}
+            {showChecklist && (
+                <OnboardingChecklist
+                    steps={profile.onboarding_steps || {
+                        tiktok_connected: profile.tiktok_connected,
+                        first_video_created: false,
+                        portfolio_samples_added: false,
+                        rates_set: false,
+                        bio_completed: false
+                    }}
+                />
+            )}
+
+            {/* 4. AI Tools Hub */}
             <AIToolsHub />
 
-            {/* 4. Content Library (if connected) */}
+            {/* 5. Content Library (if connected) */}
             <TikTokLibrary videos={videos} />
 
-            {/* 5. Career Opportunities */}
+            {/* 6. Career Opportunities */}
             <JobRecommendations />
         </div>
     );

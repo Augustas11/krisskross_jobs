@@ -51,7 +51,7 @@ export function JobRecommendations() {
                                 </div>
                                 <h4 className="text-xl font-black text-brand-dark mb-2 group-hover:text-primary transition-colors">{job.title}</h4>
                                 <p className="text-slate-500 text-sm font-medium leading-relaxed mb-4 max-w-2xl">
-                                    "{job.description}"
+                                    &quot;{job.description}&quot;
                                 </p>
                                 <div className="flex flex-wrap gap-4 text-xs font-bold text-slate-400">
                                     <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Video, Eye, ThumbsUp, RefreshCw, ArrowRight } from "lucide-react";
+import { Video, ThumbsUp, RefreshCw, ArrowRight, TrendingUp } from "lucide-react";
 
 interface CreatorVideo {
     id: string;
@@ -14,21 +14,28 @@ interface CreatorVideo {
     hook_effectiveness_score?: number;
 }
 
-export function TikTokLibrary({ videos, isSyncing }: { videos: CreatorVideo[], isSyncing?: boolean }) {
+import { useTikTokConnection } from "@/hooks/creator/useTikTokConnection";
+import { EmptyState } from "./EmptyState";
+
+export function TikTokLibrary({ videos, isSyncing: initialSyncing }: { videos: CreatorVideo[], isSyncing?: boolean }) {
+    const { syncConnection, isSyncing } = useTikTokConnection(false);
+
+    // Use either prop or hook state
+    const syncing = initialSyncing || isSyncing;
+
     if (videos.length === 0) {
         return (
-            <section className="mt-12 bg-white rounded-[32px] border border-slate-200 p-12 text-center">
-                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-6">
-                    <Video size={32} />
-                </div>
-                <h3 className="text-xl font-black text-brand-dark mb-2">No videos synced yet</h3>
-                <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto">
-                    Create your first AI video to build your portfolio and attract brands.
-                </p>
-                <button className="bg-primary text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-                    Try Free AI Tool
-                </button>
-            </section>
+            <div className="mt-12">
+                <EmptyState
+                    icon={<Video size={32} />}
+                    title="No videos synced yet"
+                    description="Create your first AI video to build your portfolio and attract brands."
+                    action={{
+                        label: "Try Free AI Tool",
+                        href: "/pipeline"
+                    }}
+                />
+            </div>
         );
     }
 
@@ -39,9 +46,13 @@ export function TikTokLibrary({ videos, isSyncing }: { videos: CreatorVideo[], i
                     <span className="w-1.5 h-6 bg-primary rounded-full"></span>
                     Your TikTok Content
                 </h3>
-                <button className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-dark transition-colors">
-                    <RefreshCw size={16} className={isSyncing ? "animate-spin" : ""} />
-                    Sync Now
+                <button
+                    onClick={() => syncConnection()}
+                    disabled={syncing}
+                    className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-dark transition-colors disabled:opacity-50"
+                >
+                    <RefreshCw size={16} className={syncing ? "animate-spin" : ""} />
+                    {syncing ? "Syncing..." : "Sync Now"}
                 </button>
             </div>
 
@@ -103,6 +114,4 @@ export function TikTokLibrary({ videos, isSyncing }: { videos: CreatorVideo[], i
     );
 }
 
-const TrendingUp = ({ size, className }: { size?: number, className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></svg>
-);
+

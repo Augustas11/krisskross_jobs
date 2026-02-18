@@ -147,15 +147,21 @@ export async function POST(req: Request) {
                     const tokens = await client.users.getUserOauthAccessToken(id, "oauth_tiktok");
                     const tokenData = tokens.data.length > 0 ? tokens.data[0] : null;
 
-                    updateData.tiktok_connected = true;
-                    updateData.tiktok_username = tiktokAccount.username;
-                    updateData.tiktok_external_account_id = tiktokAccount.id;
-                    updateData.tiktok_display_name = tiktokAccount.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null;
-                    updateData.tiktok_avatar_url = (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null;
-
                     if (tokenData) {
+                        updateData.tiktok_connected = true;
+                        updateData.tiktok_username = tiktokAccount.username || tiktokAccount.first_name; // Fallback
+                        updateData.tiktok_external_account_id = tiktokAccount.id;
+                        updateData.tiktok_display_name = tiktokAccount.first_name ? `${tiktokAccount.first_name} ${tiktokAccount.last_name || ""}`.trim() : null;
+                        updateData.tiktok_avatar_url = (tiktokAccount as any).avatar_url || (tiktokAccount as any).image_url || null;
+
                         updateData.tiktok_access_token = tokenData.token;
-                        console.log(`[Clerk Webhook] Updated TikTok token for ${id}`);
+                        // Store scopes and expiry if available in future
+                        console.log(`[Clerk Webhook] Successfully sync TikTok data for ${id}`);
+                    } else {
+                        console.warn(`[Clerk Webhook] TikTok account found but no token for ${id}`);
+                        // We still mark as connected because they linked the account, but might need re-auth for features
+                        updateData.tiktok_connected = true;
+                        updateData.tiktok_username = tiktokAccount.username;
                     }
                 } catch (tokenErr) {
                     console.error("[Clerk Webhook] Error fetching TikTok token on update:", tokenErr);
